@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    user-select: none;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+}
+
+#config {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    justify-content: start;
+    gap: 8px;
+}
+
+#debug-info {
+    width: 500px;
+}
