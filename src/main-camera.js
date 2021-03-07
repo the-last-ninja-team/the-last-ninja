@@ -22,46 +22,63 @@ export class MainCamera extends Camera {
     this.screenRect = screenRect
     this.limitRect = limitRect
     this.widthBetweenViewPortAndLimit = (this.screenRect.width - (this.edgeRect.x + this.edgeRect.width))
-
-    this.startEdgeRect = { ...this.edgeRect }
-    this.endEdgeRect = {
-      ...this.edgeRect,
-      x: this.limitRect.width - this.widthBetweenViewPortAndLimit - this.edgeRect.width
-    }
+    this.heightBetweenViewPortAndLimit = (this.screenRect.height - (this.edgeRect.y + this.edgeRect.height))
 
     this.rects = [
-      { rect: this.startEdgeRect, color: 'green' },
-      { rect: this.endEdgeRect, color: 'red' },
       { rect: this.edgeRect, color: 'black', sticky: true },
     ]
+  }
+
+  calcX() {
+    if (this.x > 0 && this.object.x - this.x < this.edgeRect.x) {
+      /** Если уже есть X камеры и объект выходит за рамки назад по уровню, то высчитываем X координату */
+      this.x = Math.max(0, this.object.x - this.edgeRect.x)
+    } else if (this.object.x > this.x + this.edgeRect.x + this.edgeRect.width - this.object.width) {
+      /** Если объект выходит за рамки вперед по уровню, то высчитываем X координату */
+      this.x = this.object.x - (this.edgeRect.x + this.edgeRect.width - this.object.width)
+    }
+
+    if (this.object.x + this.object.width  > (this.limitRect.width - this.widthBetweenViewPortAndLimit)) {
+      /**
+       * Объект достиг границы лимита по X координате с учетом рамки.
+       * В этом случае, мы должны дать ему пройти до конца (за границу) уровня, не двигая рамку.
+       * */
+      if (this.screenRect.width === this.limitRect.width) {
+        this.x = 0
+      } else {
+        this.x = this.limitRect.width - this.screenRect.width
+      }
+    }
+  }
+
+  calcY() {
+    if (this.y > 0 && this.object.y - this.y < this.edgeRect.y) {
+      /** Если уже есть Y камеры и объект выходит за рамки назад по уровню, то высчитываем Y координату */
+      this.y = Math.max(0, this.object.y - this.edgeRect.y)
+    } else if (this.object.y > this.y + this.edgeRect.y + this.edgeRect.height - this.object.height) {
+      /** Если объект выходит за рамки вперед по уровню, то высчитываем Y координату */
+      this.y = this.object.y - (this.edgeRect.y + this.edgeRect.height - this.object.height)
+    }
+
+    if (this.object.y + this.object.height  > (this.limitRect.height - this.heightBetweenViewPortAndLimit)) {
+      /**
+       * Объект достиг границы лимита по Y координате с учетом рамки.
+       * В этом случае, мы должны дать ему пройти до конца (за границу) уровня, не двигая рамку.
+       * */
+      if (this.screenRect.height === this.limitRect.height) {
+        this.y = 0
+      } else {
+        this.y = this.limitRect.height - this.screenRect.height
+      }
+    }
   }
 
   update() {
     super.update()
 
     if (this.object) {
-      if (this.x > 0 && this.object.x - this.x < this.edgeRect.x) {
-        /** Если уже есть x камеры и объект выходит за рамки назад по уровню, то высчитываем x координату */
-        this.x = Math.max(0, this.object.x - this.edgeRect.x)
-      } else if (this.object.x > this.x + this.edgeRect.x + this.edgeRect.width - this.object.width) {
-        /** Если объект выходит за рамки вперед по уровню, то высчитываем x координату */
-        this.x = this.object.x - (this.edgeRect.x + this.edgeRect.width - this.object.width)
-      }
-
-      if (this.object.x + this.object.width  > (this.limitRect.width - this.widthBetweenViewPortAndLimit)) {
-        /**
-         * Объект достиг границы лимита по X координате с учетом рамки.
-         * В этом случае, мы должны дать ему пройти до конца (за границу) уровня, не двигая рамку.
-         * */
-        if (this.screenRect.width === this.limitRect.width) {
-          this.x = 0
-        } else {
-          this.x = this.limitRect.width - this.screenRect.width
-        }
-      }
-
-      // TODO: временно не считаем Y координату (пока непонятно как будут строиться уровни)
-      this.y = 0 // Math.min(0, -(this.edgeRect.y - this.object.y))
+      this.calcX()
+      this.calcY()
 
       // Округляем для более плавного движения камеры
       this.y = Math.round(this.y)

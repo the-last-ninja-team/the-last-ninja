@@ -7,6 +7,7 @@ import { Enemies } from './enemies';
 
 import { Level01 } from './levels/level-01'
 import { Level02 } from './levels/level-02'
+import { LevelRaycastTest } from './levels/level-raycast-test'
 
 import { CheckCoins } from './checks/check-coins'
 import { CheckHMovingObjects } from './checks/check-hmoving-objects'
@@ -36,6 +37,9 @@ export class World {
         break
       case '02':
         this.level = new Level02()
+        break
+      case 'RaycastTest':
+        this.level = new LevelRaycastTest()
         break
       default:
         throw new Error(`Unsupported level value ${level}`)
@@ -69,7 +73,11 @@ export class World {
 
     this.player.castAction.callback = this.checkFireballs.fire.bind(this.checkFireballs)
     this.player.bowAttackAction.callback = this.checkArrows.fire.bind(this.checkArrows)
-    this.checkCoins = new CheckCoins(this.player, this.level.coinsStaticAnimation)
+    if (this.level.coinsStaticAnimation) {
+      this.checkCoins = new CheckCoins(this.player, this.level.coinsStaticAnimation)
+    } else {
+      this.checkCoins = null
+    }
   }
 
   getPlayerController(controller) {
@@ -92,7 +100,7 @@ export class World {
       .concat(this.checkArrows.objects.map(object => {
           return this.collider.getCollisionRects(object, true)
         }).flat())
-    this.checkCoins.update(this.env.getMobCollisionRects(this.player))
+    this.checkCoins?.update(this.env.getMobCollisionRects(this.player))
 
     if (this.level.nextLevelGate && this.level.isCanMoveToTheNextLevel()) {
       if (checkRectCollision(this.player, this.level.nextLevelGate)) {

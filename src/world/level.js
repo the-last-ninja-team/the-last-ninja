@@ -46,7 +46,7 @@ export class Level {
     // Мапа коллизий
     this.collisionMap = [...Array.from({ length: this.tileMap.rows * this.tileMap.columns }).map(() => 0)]
 
-    hitBoxes.objects.forEach(({ type, x, y, width, height }) => {
+    hitBoxes?.objects.forEach(({ type, x, y, width, height }) => {
       const value = parseInt(type, 10)
       if (value) {
         let startX = x
@@ -77,7 +77,7 @@ export class Level {
     const screen = getObjectByName('screen')
 
     this.cameraTrap = new Rect(cameraTrap.x, cameraTrap.y, cameraTrap.width, cameraTrap.height)
-    this.screenRect = new Rect(0, 0, screen.width, screen.height)
+    this.screenRect = new Rect(screen.x, screen.y, screen.width, screen.height)
     this.limitRect = new Rect(0, 0, map.width * map.tilewidth, map.height * map.tileheight)
 
     this.levelSprite = null
@@ -118,7 +118,7 @@ export class Level {
 
   update() {
     this.staticAnimations.forEach(staticAnimation => staticAnimation.update())
-    if (this.isCanMoveToTheNextLevel() && !this.nextLevelArrowCreated) {
+    if (this.isCanMoveToTheNextLevel() && !this.nextLevelArrowCreated && this.nextLevelArrow) {
       this.nextLevelArrowCreated = true
       const arrowStaticAnimation = new StaticMapAnimation(
         [this.nextLevelArrow],
