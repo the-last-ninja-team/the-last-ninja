@@ -8,6 +8,7 @@ export class Display {
   /**
    * Конструктор
    * @param canvas ссылка на канву, которую определили ранее
+   * @param camera камера, относительно которой будем двигать, т.е. создавать эффект движения
    */
   constructor(canvas, camera) {
     /**
@@ -164,7 +165,7 @@ export class Display {
    * }
    * */
   drawSprite(sprite, props) {
-    const { width, height, offsetX = 0, offsetY = 0 } = props ?? {}
+    const { width, height, offsetX = 0, offsetY = 0, camera } = props ?? {}
 
     // x и y координаты берем как есть
     let destinationX = Math.round(sprite.x)
@@ -191,9 +192,10 @@ export class Display {
     destinationHeight += (Math.abs(offsetY) * 2)
 
     if (this.camera) {
+      const { offCameraX = false, offCameraY = false } = camera ?? {}
       // Если установлена камера, то корректируем X и Y координаты относительно её
-      destinationX -= this.camera.x
-      destinationY -= this.camera.y
+      if (!offCameraX) destinationX -= this.camera.x
+      if (!offCameraY) destinationY -= this.camera.y
     }
 
     if (sprite.flipped) {

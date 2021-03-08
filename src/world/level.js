@@ -1,8 +1,8 @@
 import { Rect } from '../base/rect'
-import { Img } from '../graphic/img'
-import { ParallaxImage } from '../graphic/parallax-image'
 import { Resources } from '../resources'
 import { StaticMapAnimation } from '../graphic/static-map-animation'
+import { LevelImagesStore } from './level-images-store'
+import { LayerType } from '../level-images-draw'
 
 const findByName = (array) => (name) => {
   return array.find((object) => object.name === name)
@@ -69,47 +69,57 @@ export class Level {
     })
 
     this.collisionRects = []
-    this.staticAnimations = []
 
     // Позиция камеры
     const cameraTrap = getObjectByName('camera-trap')
     // Размер экрана
     const screen = getObjectByName('screen')
+    // Размер порта, где будет делать заливку фона и рисовать параллакс
+    const viewPort = getObjectByName('view-port')
 
     this.cameraTrap = new Rect(cameraTrap.x, cameraTrap.y, cameraTrap.width, cameraTrap.height)
     this.screenRect = new Rect(screen.x, screen.y, screen.width, screen.height)
     this.limitRect = new Rect(0, 0, map.width * map.tilewidth, map.height * map.tileheight)
+    if (viewPort) {
+      this.viewPort = new Rect(0, 0, viewPort.width, viewPort.height)
+    }
 
-    this.levelSprite = null
-    this.beforeSprite = null
-    this.images = []
-    this.parallaxes = []
+    this.imagesStore = new LevelImagesStore(this.limitRect.width)
   }
 
   createImages(display, camera) {
-    //
+    const { key, map, spriteSheet } = this
+
+    const levelMap = {
+      width: map.width,
+      height: map.height,
+      spriteWidth: map.tilewidth,
+      spriteHeight: map.tileheight
+    }
+
+    const levelSprite = display.createMap(
+      key,
+      {
+        ...levelMap,
+        layers: map.layers.filter(({ name, type }) => {
+          return type === 'tilelayer' && name !== 'before-layer'
+        })
+      }, spriteSheet)
+    this.imagesStore.addSprite(LayerType.level, levelSprite)
+
+    const frontSprite = display.createMap(
+      `${key}-before-sprite`,
+      {
+        ...levelMap,
+        layers: map.layers.filter(({ name, type }) => {
+          return type === 'tilelayer' && name === 'before-layer'
+        })
+      }, spriteSheet)
+    this.imagesStore.addSprite(LayerType.front, frontSprite)
   }
 
   watch(player) {
     this.player = player
-  }
-
-  addImage(name, x, y, width, height) {
-    const image = new Img({ name, x, y, width, height })
-    this.images.push(image)
-    return image
-  }
-
-  addParallax({ name, y, width, height, delay, step, direction, type, space }) {
-    const parallax = new ParallaxImage({
-      name, screenWidth: this.screenRect.width, y, width, height, delay, step, direction, type, space
-    })
-    this.parallaxes.push(parallax)
-    return parallax
-  }
-
-  addStaticAnimation(animation) {
-    this.staticAnimations.push(animation)
   }
 
   isCanMoveToTheNextLevel() {
@@ -117,7 +127,9 @@ export class Level {
   }
 
   update() {
-    this.staticAnimations.forEach(staticAnimation => staticAnimation.update())
+    this.imagesStore.update()
+
+    // Временная затычка, чтобы переходить на следующий уровень
     if (this.isCanMoveToTheNextLevel() && !this.nextLevelArrowCreated && this.nextLevelArrow) {
       this.nextLevelArrowCreated = true
       const arrowStaticAnimation = new StaticMapAnimation(
@@ -127,7 +139,7 @@ export class Level {
           frames: [1, 2, 3, 4],
           delay: 4
         })
-      this.addStaticAnimation(arrowStaticAnimation)
+      this.imagesStore.addStaticAnimation(arrowStaticAnimation)
     }
   }
 }

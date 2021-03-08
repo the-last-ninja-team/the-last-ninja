@@ -252,28 +252,6 @@
          "name":"level",
          "objects":[
                 {
-                 "height":400,
-                 "id":91,
-                 "name":"screen",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":800,
-                 "x":0,
-                 "y":0
-                }, 
-                {
-                 "height":400,
-                 "id":96,
-                 "name":"camera-trap",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":144,
-                 "x":256,
-                 "y":0
-                }, 
-                {
                  "height":16,
                  "id":100,
                  "name":"player",
@@ -305,10 +283,43 @@
                  "width":16,
                  "x":3168,
                  "y":208
+                }, 
+                {
+                 "height":272,
+                 "id":118,
+                 "name":"screen",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":464,
+                 "x":0,
+                 "y":0
+                }, 
+                {
+                 "height":112,
+                 "id":121,
+                 "name":"camera-trap",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":112,
+                 "y":80
+                }, 
+                {
+                 "height":400,
+                 "id":122,
+                 "name":"view-port",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":800,
+                 "x":0,
+                 "y":0
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -577,7 +588,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":116,
+ "nextobjectid":123,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.4.3",

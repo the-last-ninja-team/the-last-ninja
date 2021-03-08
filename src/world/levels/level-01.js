@@ -5,6 +5,7 @@ import { ParallaxDirection, ParallaxType } from '../../graphic/parallax-image'
 import { ParallaxAnimation } from '../animation/parallax-animation'
 import { createCoinsStaticAnimation } from './helpers'
 import { LEVELS } from '../../constants'
+import { LayerType } from '../../level-images-draw'
 
 const LEVEL_TILES = Resources.getSprite('level01-tileset')
 const SEA_IMAGE = Resources.getImg('level01-sea')
@@ -24,38 +25,38 @@ export class Level01 extends Level {
     })
 
     this.coinsStaticAnimation = createCoinsStaticAnimation(levelMap, LEVEL_TILES)
-    this.addStaticAnimation(this.coinsStaticAnimation)
+    this.imagesStore.addStaticAnimation(this.coinsStaticAnimation)
   }
 
   createImages(display, camera) {
     super.createImages(display, camera)
 
-    const backgroundContext = display.createContext(this.screenRect.width, this.screenRect.height)
+    const backgroundContext = display.createContext(this.limitRect.width, this.limitRect.height)
 
-    getImageScreenCountsByX(this.screenRect.width, SKY_IMAGE.width, (x) => {
+    getImageScreenCountsByX(this.limitRect.width, SKY_IMAGE.width, (x) => {
       backgroundContext.drawImage(display.getImage(SKY_IMAGE.name), x, 0,
         SKY_IMAGE.width, SKY_IMAGE.height)
     })
 
-    getImageScreenCountsByX(this.screenRect.width, SEA_IMAGE.width, (x) => {
+    getImageScreenCountsByX(this.limitRect.width, SEA_IMAGE.width, (x) => {
       backgroundContext.drawImage(display.getImage(SEA_IMAGE.name), x,
         SKY_IMAGE.height, SEA_IMAGE.width, SEA_IMAGE.height)
     })
 
-    this.addParallax({
+    this.imagesStore.addParallax(LayerType.afterBackground, {
       ...CLOUDS_IMAGE,
       y: SKY_IMAGE.height - CLOUDS_IMAGE.height,
       step: 1,
       delay: 2
     }).run()
 
-    const farGroundParallax = this.addParallax(({
+    const farGroundParallax = this.imagesStore.addParallax(LayerType.afterBackground, {
       ...FAR_GROUNDS_IMAGE,
-      y: this.screenRect.height - FAR_GROUNDS_IMAGE.height,
+      y: this.limitRect.height - FAR_GROUNDS_IMAGE.height,
       space: this.screenRect.width,
       direction: ParallaxDirection.backward,
       type: ParallaxType.custom
-    }))
+    }, { camera: { offCameraX: true } })
 
     this.farGroundParallaxAnimation = new ParallaxAnimation({
       parallax: farGroundParallax,
@@ -69,7 +70,8 @@ export class Level01 extends Level {
     const { canvas } = backgroundContext
     const name = 'level01-background'
     display.addImage(name, canvas)
-    this.addImage(name, 0, 0, canvas.width, canvas.height)
+    this.imagesStore.addSprite(LayerType.background,
+      { name, width: canvas.width, height: canvas.height })
   }
 
   watch(player) {
@@ -85,6 +87,6 @@ export class Level01 extends Level {
 
   update() {
     super.update()
-    this.farGroundParallaxAnimation.update()
+    this.farGroundParallaxAnimation?.update()
   }
 }
