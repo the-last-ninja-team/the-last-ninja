@@ -18,6 +18,8 @@ export class MainCamera extends Camera {
    }
 
   init({ edgeRect, screenRect, limitRect }) {
+    this.x = 0
+    this.y = 0
     this.edgeRect = edgeRect
     this.screenRect = screenRect
     this.limitRect = limitRect
