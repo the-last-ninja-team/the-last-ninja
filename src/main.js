@@ -92,7 +92,7 @@ export class Main {
     this.display.buffer.canvas.height = screenRect.height
 
     // Инициализируем камеру по параметрам уровня
-    this.camera.init({ edgeRect: cameraTrap, limitRect, screenRect })
+    this.camera.init({ cameraTrap, limitRect, screenRect })
     // Инициализируем объект для отрисовки слоев уровня
     this.imagesDraw.init(this.game.world.level.imagesStore)
   }

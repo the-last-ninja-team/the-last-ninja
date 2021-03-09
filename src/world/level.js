@@ -74,15 +74,10 @@ export class Level {
     const cameraTrap = getObjectByName('camera-trap')
     // Размер экрана
     const screen = getObjectByName('screen')
-    // Размер порта, где будет делать заливку фона и рисовать параллакс
-    const viewPort = getObjectByName('view-port')
 
     this.cameraTrap = new Rect(cameraTrap.x, cameraTrap.y, cameraTrap.width, cameraTrap.height)
     this.screenRect = new Rect(screen.x, screen.y, screen.width, screen.height)
     this.limitRect = new Rect(0, 0, map.width * map.tilewidth, map.height * map.tileheight)
-    if (viewPort) {
-      this.viewPort = new Rect(0, 0, viewPort.width, viewPort.height)
-    }
 
     this.imagesStore = new LevelImagesStore(this.limitRect.width)
   }

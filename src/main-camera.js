@@ -17,27 +17,27 @@ export class MainCamera extends Camera {
     super()
    }
 
-  init({ edgeRect, screenRect, limitRect }) {
-    this.x = 0
-    this.y = 0
-    this.edgeRect = edgeRect
+  init({ cameraTrap, screenRect, limitRect }) {
+    this.x = screenRect.x
+    this.y = screenRect.y
+    this.cameraTrap = cameraTrap
     this.screenRect = screenRect
     this.limitRect = limitRect
-    this.widthBetweenViewPortAndLimit = (this.screenRect.width - (this.edgeRect.x + this.edgeRect.width))
-    this.heightBetweenViewPortAndLimit = (this.screenRect.height - (this.edgeRect.y + this.edgeRect.height))
+    this.widthBetweenViewPortAndLimit = (this.screenRect.width - (cameraTrap.x + cameraTrap.width))
+    this.heightBetweenViewPortAndLimit = (this.screenRect.height - (cameraTrap.y + cameraTrap.height))
 
     this.rects = [
-      { rect: this.edgeRect, color: 'black', sticky: true },
+      { rect: cameraTrap, color: 'black', sticky: true },
     ]
   }
 
   calcX() {
-    if (this.x > 0 && this.object.x - this.x < this.edgeRect.x) {
+    if (this.x > 0 && this.object.x - this.x < this.cameraTrap.x) {
       /** Если уже есть X камеры и объект выходит за рамки назад по уровню, то высчитываем X координату */
-      this.x = Math.max(0, this.object.x - this.edgeRect.x)
-    } else if (this.object.x > this.x + this.edgeRect.x + this.edgeRect.width - this.object.width) {
+      this.x = Math.max(0, this.object.x - this.cameraTrap.x)
+    } else if (this.object.x > this.x + this.cameraTrap.x + this.cameraTrap.width - this.object.width) {
       /** Если объект выходит за рамки вперед по уровню, то высчитываем X координату */
-      this.x = this.object.x - (this.edgeRect.x + this.edgeRect.width - this.object.width)
+      this.x = this.object.x - (this.cameraTrap.x + this.cameraTrap.width - this.object.width)
     }
 
     if (this.object.x + this.object.width  > (this.limitRect.width - this.widthBetweenViewPortAndLimit)) {
@@ -54,12 +54,12 @@ export class MainCamera extends Camera {
   }
 
   calcY() {
-    if (this.y > 0 && this.object.y - this.y < this.edgeRect.y) {
+    if (this.y > 0 && this.object.y - this.y < this.cameraTrap.y) {
       /** Если уже есть Y камеры и объект выходит за рамки назад по уровню, то высчитываем Y координату */
-      this.y = Math.max(0, this.object.y - this.edgeRect.y)
-    } else if (this.object.y > this.y + this.edgeRect.y + this.edgeRect.height - this.object.height) {
+      this.y = Math.max(0, this.object.y - this.cameraTrap.y)
+    } else if (this.object.y > this.y + this.cameraTrap.y + this.cameraTrap.height - this.object.height) {
       /** Если объект выходит за рамки вперед по уровню, то высчитываем Y координату */
-      this.y = this.object.y - (this.edgeRect.y + this.edgeRect.height - this.object.height)
+      this.y = this.object.y - (this.cameraTrap.y + this.cameraTrap.height - this.object.height)
     }
 
     if (this.object.y + this.object.height  > (this.limitRect.height - this.heightBetweenViewPortAndLimit)) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="left-up" width="200" height="25" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="123">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="left-up" width="200" height="25" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="125">
  <editorsettings>
   <export target="../level-maps/level01.json" format="json"/>
  </editorsettings>
@@ -171,9 +171,8 @@
   <object id="100" name="player" x="64" y="176" width="16" height="16"/>
   <object id="101" name="next-level-gate" x="3168" y="256" width="16" height="16"/>
   <object id="109" name="next-level-arrow" x="3168" y="208" width="16" height="32"/>
-  <object id="118" name="screen" x="0" y="0" width="464" height="272"/>
+  <object id="118" name="screen" x="32" y="80" width="464" height="272"/>
   <object id="121" name="camera-trap" x="112" y="80" width="128" height="112"/>
-  <object id="122" name="view-port" x="0" y="0" width="800" height="400"/>
  </objectgroup>
  <objectgroup id="11" name="enemies">
   <object id="112" type="skeleton" x="448" y="224" width="16" height="16"/>
