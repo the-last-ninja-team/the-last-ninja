@@ -1,4 +1,5 @@
 import { Camera } from './base/camera'
+import { Vector } from './base/vector'
 
 /**
  * Camera trap
@@ -15,11 +16,17 @@ import { Camera } from './base/camera'
 export class MainCamera extends Camera {
   constructor() {
     super()
+
+    this.steps = 0
+    this.index = 1
    }
 
   init({ cameraTrap, screenRect, limitRect }) {
     this.x = screenRect.x
     this.y = screenRect.y
+    this.newX = this.x
+    this.newY = this.y
+
     this.cameraTrap = cameraTrap
     this.screenRect = screenRect
     this.limitRect = limitRect
@@ -34,10 +41,10 @@ export class MainCamera extends Camera {
   calcX() {
     if (this.x > 0 && this.object.x - this.x < this.cameraTrap.x) {
       /** Если уже есть X камеры и объект выходит за рамки назад по уровню, то высчитываем X координату */
-      this.x = Math.max(0, this.object.x - this.cameraTrap.x)
+      this.newX = Math.max(0, this.object.x - this.cameraTrap.x)
     } else if (this.object.x > this.x + this.cameraTrap.x + this.cameraTrap.width - this.object.width) {
       /** Если объект выходит за рамки вперед по уровню, то высчитываем X координату */
-      this.x = this.object.x - (this.cameraTrap.x + this.cameraTrap.width - this.object.width)
+      this.newX = this.object.x - (this.cameraTrap.x + this.cameraTrap.width - this.object.width)
     }
 
     if (this.object.x + this.object.width  > (this.limitRect.width - this.widthBetweenViewPortAndLimit)) {
@@ -46,9 +53,9 @@ export class MainCamera extends Camera {
        * В этом случае, мы должны дать ему пройти до конца (за границу) уровня, не двигая рамку.
        * */
       if (this.screenRect.width === this.limitRect.width) {
-        this.x = 0
+        this.newX = 0
       } else {
-        this.x = this.limitRect.width - this.screenRect.width
+        this.newX = this.limitRect.width - this.screenRect.width
       }
     }
   }
@@ -56,10 +63,10 @@ export class MainCamera extends Camera {
   calcY() {
     if (this.y > 0 && this.object.y - this.y < this.cameraTrap.y) {
       /** Если уже есть Y камеры и объект выходит за рамки назад по уровню, то высчитываем Y координату */
-      this.y = Math.max(0, this.object.y - this.cameraTrap.y)
+      this.newY = Math.max(0, this.object.y - this.cameraTrap.y)
     } else if (this.object.y > this.y + this.cameraTrap.y + this.cameraTrap.height - this.object.height) {
       /** Если объект выходит за рамки вперед по уровню, то высчитываем Y координату */
-      this.y = this.object.y - (this.cameraTrap.y + this.cameraTrap.height - this.object.height)
+      this.newY = this.object.y - (this.cameraTrap.y + this.cameraTrap.height - this.object.height)
     }
 
     if (this.object.y + this.object.height  > (this.limitRect.height - this.heightBetweenViewPortAndLimit)) {
@@ -68,9 +75,9 @@ export class MainCamera extends Camera {
        * В этом случае, мы должны дать ему пройти до конца (за границу) уровня, не двигая рамку.
        * */
       if (this.screenRect.height === this.limitRect.height) {
-        this.y = 0
+        this.newY = 0
       } else {
-        this.y = this.limitRect.height - this.screenRect.height
+        this.newY = this.limitRect.height - this.screenRect.height
       }
     }
   }
@@ -82,9 +89,23 @@ export class MainCamera extends Camera {
       this.calcX()
       this.calcY()
 
-      // Округляем для более плавного движения камеры
-      this.y = Math.round(this.y)
-      this.x = Math.round(this.x)
+      this.x = Math.round(this.newX)
+
+      if (this.y !== Math.round(this.newY)) {
+        // Интерполируем длину до новой точки, чтобы при падении или подъеме камера двигалась плавно
+        const startPos = new Vector(this.x, this.y)
+        const targetPos = new Vector(this.newX, this.newY)
+
+        this.steps += (0.002 * this.index)
+        this.index++
+        startPos.lerp(targetPos.x, targetPos.y, this.steps)
+
+        this.y = Math.round(startPos.y)
+
+      } else {
+        this.steps = 0
+        this.index = 1
+      }
     }
   }
 }
