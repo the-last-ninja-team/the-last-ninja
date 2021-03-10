@@ -22,8 +22,11 @@ export class MainCamera extends Camera {
    }
 
   init({ cameraTrap, screenRect, limitRect }) {
+    // Координаты, относительно которых будем работать вывод на экран
     this.x = screenRect.x
     this.y = screenRect.y
+
+    // Координаты, которые получены в текущий момент и от них нужно интерполировать, чтобы добавить плавности
     this.newX = this.x
     this.newY = this.y
 
@@ -89,6 +92,7 @@ export class MainCamera extends Camera {
       this.calcX()
       this.calcY()
 
+      // X координату применяем сразу, т.к. нет смысла делать плавность по причине того, что игрок всегда передвигается по горизонтали
       this.x = Math.round(this.newX)
 
       if (this.y !== Math.round(this.newY)) {
@@ -96,12 +100,11 @@ export class MainCamera extends Camera {
         const startPos = new Vector(this.x, this.y)
         const targetPos = new Vector(this.newX, this.newY)
 
-        this.steps += (0.002 * this.index)
+        this.steps += (0.003 * this.index)
         this.index++
         startPos.lerp(targetPos.x, targetPos.y, this.steps)
 
         this.y = Math.round(startPos.y)
-
       } else {
         this.steps = 0
         this.index = 1
