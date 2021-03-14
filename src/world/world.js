@@ -30,7 +30,7 @@ export class World {
     this.hitBoxes = []
 
     // Окружение, куда будем помещать все объекты (противники, игрок, стрелы и т.д.)
-    this.env = new Environment(friction, gravity, new PlatformerCollider())
+    this.env = new Environment(friction, gravity, new RayCastCollider())
     // Хелпер для чтения хитбоксов объектов
     this.hitBoxesHelper = new HitBoxesHelper()
     // Противники

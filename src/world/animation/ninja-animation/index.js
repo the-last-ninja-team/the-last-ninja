@@ -102,6 +102,8 @@ export class NinjaAnimation extends Animator {
           || ((this.mob.jumping || this.isCollisionTypes([CollisionType.left, CollisionType.right])) && this.isGroundAttack())
           // когда производится атака в воздухе и сверху или снизу находится коллизия (т.е. мы приземлились на платформу или ударились голой в нее)
           || (this.isCollisionTypes([CollisionType.top, CollisionType.bottom]) && this.isAirAttack())
+          // когда стреляем из лука, кастуем или ударяем мечом и начали падать
+          || this.isGroundAttack() && this.interpreter.isFalling()
   }
 
   // Проверка, нужно ли прерывать ввода влево-вправо, в тот момент когда персонаж двигается и одновременно производит атаку
@@ -239,7 +241,7 @@ export class NinjaAnimation extends Animator {
         this.longAnimation = true
 
         // Атакуем мечом
-        if (this.mob.jumping) {
+        if (this.mob.jumping || this.interpreter.isFalling()) {
           this.changeFrameSet(this.airSwordAttacks.next(), AnimatorMode.pause, NinjaAnimationDelay.airSword)
         } else {
           this.changeFrameSet(this.swordAttacks.next(), AnimatorMode.pause, NinjaAnimationDelay.sword)
@@ -248,7 +250,7 @@ export class NinjaAnimation extends Animator {
         this.longAnimation = true
 
         // Стреляем из лука
-        if (this.mob.jumping) {
+        if (this.mob.jumping || this.interpreter.isFalling()) {
           this.changeFrameSet(this.airBowAttack, AnimatorMode.pause, NinjaAnimationDelay.airBow)
         } else {
           this.changeFrameSet(this.bowAttack, AnimatorMode.pause, NinjaAnimationDelay.bow)

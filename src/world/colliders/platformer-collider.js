@@ -29,41 +29,41 @@ export class PlatformerCollider extends Collider {
    * frame the top of the object was below the bottom of the tile, we have entered into
    * this tile. Pretty simple stuff.
    * */
-  _collidePlatformBottom(object, tileBottom) {
-    if (object.getTop() < tileBottom && object.getOldTop() >= tileBottom) {
-      object.setTop(tileBottom)  // Move the top of the object to the bottom of the tile.
-      object.velocityY = 0       // Stop moving in that direction.
-      return true                // Return true because there was a collision.
+  _collidePlatformBottom(mob, tileBottom) {
+    if (mob.getTop() < tileBottom && mob.getOldTop() >= tileBottom) {
+      mob.setTop(tileBottom)  // Move the top of the object to the bottom of the tile.
+      mob.velocityY = 0       // Stop moving in that direction.
+      return true             // Return true because there was a collision.
     }
 
     return false
   }
 
-  _collidePlatformLeft(object, tileLeft) {
-    if (object.getRight() > tileLeft && object.getOldRight() <= tileLeft) {
-      object.setRight(tileLeft - 0.01) // -0.01 is to fix a small problem with rounding
-      object.velocityX = 0
+  _collidePlatformLeft(mob, tileLeft) {
+    if (mob.getRight() > tileLeft && mob.getOldRight() <= tileLeft) {
+      mob.setRight(tileLeft - 0.01) // -0.01 is to fix a small problem with rounding
+      mob.velocityX = 0
       return true
     }
     
     return false
   }
 
-  _collidePlatformRight(object, tileRight) {
-    if (object.getLeft() < tileRight && object.getOldLeft() >= tileRight) {
-      object.setLeft(tileRight)
-      object.velocityX = 0
+  _collidePlatformRight(mob, tileRight) {
+    if (mob.getLeft() < tileRight && mob.getOldLeft() >= tileRight) {
+      mob.setLeft(tileRight)
+      mob.velocityX = 0
       return true
     }
     
     return false
   }
 
-  _collidePlatformTop(object, tileTop) {
-    if (object.getBottom() > tileTop && object.getOldBottom() <= tileTop) {
-      object.setBottom(tileTop - 0.01)
-      object.velocityY = 0
-      object.jumping = false
+  _collidePlatformTop(mob, tileTop) {
+    if (mob.getBottom() > tileTop && mob.getOldBottom() <= tileTop) {
+      mob.setBottom(tileTop - 0.01)
+      mob.velocityY = 0
+      mob.jumping = false
       return true
     }
     
@@ -125,7 +125,7 @@ export class PlatformerCollider extends Collider {
    * @param tileY y координата ячвейки
    * @param size размер спрайта
    * */
-  _collide(value, index, object, tileX, tileY, size) {
+  _collide(value, index, mob, tileX, tileY, size) {
     const { width, height } = size
 
     const bin = this._dec2Bin(value)
@@ -139,68 +139,70 @@ export class PlatformerCollider extends Collider {
     */
 
     if (this._checkBit(bin, '0010')) {
-      if (this._collidePlatformRight(object, tileX + width)) return CollisionType.right
+      if (this._collidePlatformRight(mob, tileX + width)) return CollisionType.right
     }
     if (this._checkBit(bin, '1000')) {
       // left
-      if (this._collidePlatformLeft(object, tileX)) return CollisionType.left
+      if (this._collidePlatformLeft(mob, tileX)) return CollisionType.left
     }
     if (this._checkBit(bin, '0001')) {
       // top
-      if (this._collidePlatformTop(object, tileY)) return CollisionType.top
+      if (this._collidePlatformTop(mob, tileY)) return CollisionType.top
     }
     if (this._checkBit(bin,'0100')) {
       // bottom
-      if (this._collidePlatformBottom(object, tileY + height)) return CollisionType.bottom
+      if (this._collidePlatformBottom(mob, tileY + height)) return CollisionType.bottom
     }
 
     return null
   }
 
-  collide(object) {
+  collide(mob) {
+    super.collide(mob)
+
     const collides = []
-    object.collisions = []
+    mob.collisions = []
 
     const { size, columns } = this.tileMap
     const { width, height } = size
 
     let bottom, left, right, top, value, index, collisionType
 
-    top = this._getSizes(object).top
-    left = this._getSizes(object).left
+    top = this._getSizes(mob).top
+    left = this._getSizes(mob).left
     collides.push(new Rect(left * width, top * height, width, height))
 
     index = top * columns + left
     value = this.collisionMap[index]
-    collisionType = this._collide(value, index, object, left * width, top * height, size)
-    if (collisionType) object.collisions.push(collisionType)
+    collisionType = this._collide(value, index, mob, left * width, top * height, size)
+    if (collisionType) mob.collisions.push(collisionType)
 
-    top = this._getSizes(object).top
-    right = this._getSizes(object).right
+    top = this._getSizes(mob).top
+    right = this._getSizes(mob).right
     collides.push(new Rect(right * width, top * height, width, height))
 
     index = top * columns + right
     value = this.collisionMap[index]
-    collisionType = this._collide(value, index, object, right * width, top * height, size)
-    if (collisionType) object.collisions.push(collisionType)
+    collisionType = this._collide(value, index, mob, right * width, top * height, size)
+    if (collisionType) mob.collisions.push(collisionType)
 
-    bottom = this._getSizes(object).bottom
-    left = this._getSizes(object).left
+    bottom = this._getSizes(mob).bottom
+    left = this._getSizes(mob).left
     collides.push(new Rect(left * width, bottom * height, width, height))
 
     index = bottom * columns + left
     value = this.collisionMap[index]
-    collisionType = this._collide(value, index, object, left * width, bottom * height, size)
-    if (collisionType) object.collisions.push(collisionType)
+    collisionType = this._collide(value, index, mob, left * width, bottom * height, size)
+    if (collisionType) mob.collisions.push(collisionType)
 
-    bottom = this._getSizes(object).bottom
-    right = this._getSizes(object).right
+    bottom = this._getSizes(mob).bottom
+    right = this._getSizes(mob).right
     collides.push(new Rect(right * width, bottom * height, width, height))
 
     index = bottom * columns + right
     value = this.collisionMap[index]
-    collisionType = this._collide(value, index, object, right * width, bottom * height, size)
-    if (collisionType) object.collisions.push(collisionType)
+    collisionType = this._collide(value, index, mob, right * width, bottom * height, size)
+    if (collisionType) mob.collisions.push(collisionType)
 
     return collides
   }

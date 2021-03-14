@@ -58,7 +58,7 @@ export const PlayerType = {
   props: {
     width: 16,
     height: 16,
-    jumpPower: 32,
+    jumpPower: 22.5,
     speed: 1.55,
     hitBox: { width: 16, height: 32 }
   }
