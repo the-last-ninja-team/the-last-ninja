@@ -39,28 +39,6 @@
                  "y":256
                 }, 
                 {
-                 "height":32,
-                 "id":7,
-                 "name":"",
-                 "rotation":0,
-                 "type":"1",
-                 "visible":true,
-                 "width":32,
-                 "x":208,
-                 "y":256
-                }, 
-                {
-                 "height":32,
-                 "id":15,
-                 "name":"",
-                 "rotation":0,
-                 "type":"1",
-                 "visible":true,
-                 "width":496,
-                 "x":240,
-                 "y":256
-                }, 
-                {
                  "height":16,
                  "id":17,
                  "name":"",
@@ -125,6 +103,17 @@
                  "width":48,
                  "x":112,
                  "y":176
+                }, 
+                {
+                 "height":16,
+                 "id":30,
+                 "name":"",
+                 "rotation":0,
+                 "type":"1",
+                 "visible":true,
+                 "width":528,
+                 "x":208,
+                 "y":256
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -157,18 +146,29 @@
                  "visible":true,
                  "width":400,
                  "x":0,
-                 "y":0
+                 "y":160
                 }, 
                 {
-                 "height":112,
-                 "id":29,
+                 "height":16,
+                 "id":35,
                  "name":"camera-trap",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":128,
                  "x":80,
-                 "y":64
+                 "y":112
+                }, 
+                {
+                 "height":0,
+                 "id":36,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":362,
+                 "y":-70.6667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -177,7 +177,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":30,
+ "nextobjectid":37,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.4.3",
@@ -185,7 +185,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"..\/tmx\/levelRaycastTest.tsx"
+         "source":"..\/tmx\/levelRayCastTest.tsx"
         }],
  "tilewidth":16,
  "type":"map",

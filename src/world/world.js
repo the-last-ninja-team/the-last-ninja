@@ -2,13 +2,14 @@ import { NinjaAnimation } from './animation/ninja-animation'
 import { NinjaController } from './controllers/ninja-controller'
 
 import { ObjectsFactory } from './objects/objects-factory'
-import { CollideObject } from './collide-object'
 import { Enemies } from './enemies';
 
+// Levels
 import { Level01 } from './levels/level-01'
 import { Level02 } from './levels/level-02'
-import { LevelRaycastTest } from './levels/level-raycast-test'
+import { LevelRayCastTest } from './levels/level-raycast-test'
 
+// Checking objects
 import { CheckCoins } from './checks/check-coins'
 import { CheckHMovingObjects } from './checks/check-hmoving-objects'
 
@@ -16,14 +17,22 @@ import { Environment } from './environment'
 import { checkRectCollision } from '../utils'
 import { ObjectType, PlayerType } from './constants'
 
+// Colliders
+import { RayCastCollider } from './colliders/raycast-collider'
+import { PlatformerCollider } from './colliders/platformer-collider'
+import { HitBoxesHelper } from './hitboxes-helper'
+
 export class World {
   constructor({ friction = 0.85, gravity = 2, createLevel }) {
     // Цвет фона
     this.backgroundColor = 'grey'
     this.createLevel = createLevel
+    this.hitBoxes = []
 
-    this.collider = new CollideObject()
-    this.env = new Environment(friction, gravity, this.collider)
+    // Окружение, куда будем помещать все объекты (противники, игрок, стрелы и т.д.)
+    this.env = new Environment(friction, gravity, new PlatformerCollider())
+    // Хелпер для чтения хитбоксов объектов
+    this.hitBoxesHelper = new HitBoxesHelper()
     // Противники
     this.enemies = new Enemies(this.env)
     // Анимация игрока
@@ -38,8 +47,8 @@ export class World {
       case '02':
         this.level = new Level02()
         break
-      case 'RaycastTest':
-        this.level = new LevelRaycastTest()
+      case 'RayCastTest':
+        this.level = new LevelRayCastTest()
         break
       default:
         throw new Error(`Unsupported level value ${level}`)
@@ -51,9 +60,11 @@ export class World {
   initLevel() {
     const { x, y } = this.level.playerPosition
     this.player = ObjectsFactory.createPlayer(x, y, PlayerType.props)
-    this.collider.setLevel(this.level)
 
-    this.env.init(this.level.limitRect)
+    const { limitRect, collisionObjects, tileMap } = this.level
+
+    this.env.init(limitRect, collisionObjects, tileMap)
+    this.hitBoxesHelper.init(tileMap)
     this.env.addMob(this.player)
     this.playerAnimation.watch(this.player)
     this.level.watch(this.player)
@@ -93,14 +104,15 @@ export class World {
     this.playerAnimation.update()
     this.enemies.update()
 
-    this.level.collisionRects = this.env.getAllCollisionRects()
+    this.hitBoxes = this.env.mobs.map(mob => this.hitBoxesHelper.getHitBoxes(mob)).flat()
       .concat(this.checkFireballs.objects.map(object => {
-          return this.collider.getCollisionRects(object, true)
+          return this.hitBoxesHelper.getHitBoxes(object, true)
         }).flat())
       .concat(this.checkArrows.objects.map(object => {
-          return this.collider.getCollisionRects(object, true)
+          return this.hitBoxesHelper.getHitBoxes(object, true)
         }).flat())
-    this.checkCoins?.update(this.env.getMobCollisionRects(this.player))
+
+    this.checkCoins?.update(this.hitBoxesHelper.getHitBoxes(this.player))
 
     if (this.level.nextLevelGate && this.level.isCanMoveToTheNextLevel()) {
       if (checkRectCollision(this.player, this.level.nextLevelGate)) {

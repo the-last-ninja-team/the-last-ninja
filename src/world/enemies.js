@@ -20,7 +20,6 @@ export class Enemies {
       this.env.addMob(mob)
       return animation
     })
-
   }
 
   update() {

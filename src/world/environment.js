@@ -5,10 +5,11 @@ export class Environment {
     this.collider = collider
   }
 
-  init(limitRect) {
+  init(limitRect, collisionObjects, tileMap) {
     this.mobs = []
+    this.collides = []
     this.limitRect = limitRect
-    this.mobsCollisioRects = new Map()
+    this.collider.init(limitRect, collisionObjects, tileMap)
   }
 
   addMob(...mob) {
@@ -19,19 +20,7 @@ export class Environment {
     this.mobs = this.mobs.filter(toRemove => !toRemove === mob)
   }
 
-  getMobCollisionRects(mob) {
-    return this.mobsCollisioRects.get(mob)
-  }
-
-  getAllCollisionRects() {
-    let allRects = []
-    for (const rects of this.mobsCollisioRects.values()) {
-      allRects = allRects.concat(rects)
-    }
-    return allRects
-  }
-
-  collideMob(mob, limitRect) {
+  _collideMob(mob, limitRect) {
     if (mob.getLeft() < 0) {
       mob.setLeft(0)
       mob.velocityX = 0
@@ -58,16 +47,16 @@ export class Environment {
     //   mob.jumping = false
     // }
 
-    this.mobsCollisioRects.set(mob, this.collider.collideObject(mob))
+    this.collides = this.collides.concat(this.collider.collide(mob))
   }
 
   update() {
-    this.mobsCollisioRects.clear()
+    this.collides = []
 
     this.mobs.forEach(mob => {
       mob.velocityY += this.gravity
       mob.updatePosition(this.gravity, this.friction)
-      this.collideMob(mob, this.limitRect)
+      this._collideMob(mob, this.limitRect)
     })
   }
 }

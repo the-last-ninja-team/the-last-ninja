@@ -2,13 +2,13 @@ import { Level } from '../level'
 import { LEVELS } from '../../constants'
 import { Resources } from '../../resources'
 
-const LEVEL_TILES = Resources.getSprite('levelRaycastTest-tileset')
-const levelMap = require('../../assets/level-maps/levelRaycastTest.json')
+const LEVEL_TILES = Resources.getSprite('levelRayCastTest-tileset')
+const levelMap = require('../../assets/level-maps/levelRayCastTest.json')
 
-export class LevelRaycastTest extends Level {
+export class LevelRayCastTest extends Level {
   constructor() {
     super({
-      key: 'levelRaycastTest',
+      key: 'levelRayCastTest',
       map: levelMap,
       spriteSheet: LEVEL_TILES,
       prevLevel: LEVELS.level01

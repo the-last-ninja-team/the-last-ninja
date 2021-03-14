@@ -65,8 +65,8 @@
         "spriteHeight": 16
       },
       {
-        "name": "levelRaycastTest-tileset",
-        "src": "./assets/levels/levelRaycastTest/tileset.png",
+        "name": "levelRayCastTest-tileset",
+        "src": "./assets/levels/levelRayCastTest/tileset.png",
         "width": 224,
         "height": 128,
         "spriteWidth": 16,

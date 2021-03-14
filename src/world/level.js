@@ -27,12 +27,14 @@ export class Level {
     }
 
     const getLayerByName = findByName(map.layers)
-    const hitBoxes = getLayerByName('collisions')
     const levelBoxes = getLayerByName('level')
+
     // Точки респауна
     this.respawns = getLayerByName('respawn')
     // Исходные позиции противников
     this.enemies = getLayerByName('enemies')?.objects ?? []
+    // Объекты коллизий
+    this.collisionObjects = getLayerByName('collisions')?.objects ?? []
 
     const getObjectByName = findByName(levelBoxes.objects)
     // Позиция игрока на старте
@@ -43,32 +45,6 @@ export class Level {
     this.prevLevelGate = getObjectByName('prev-level-gate')
     // Указатель на следующий уровень
     this.nextLevelArrow = getObjectByName('next-level-arrow')
-    // Мапа коллизий
-    this.collisionMap = [...Array.from({ length: this.tileMap.rows * this.tileMap.columns }).map(() => 0)]
-
-    hitBoxes?.objects.forEach(({ type, x, y, width, height }) => {
-      const value = parseInt(type, 10)
-      if (value) {
-        let startX = x
-        let startY = y
-        const rows = height / this.tileMap.size.height
-        const columns = width / this.tileMap.size.width
-
-        for (let i = 1; i <= rows * columns; i ++) {
-          const index = (startY / this.tileMap.size.height) * this.tileMap.columns + (startX / this.tileMap.size.width)
-          this.collisionMap[index] = value
-
-          startX += this.tileMap.size.width
-
-          if (i % columns === 0) {
-            startY += this.tileMap.size.height
-            startX = x
-          }
-        }
-      }
-    })
-
-    this.collisionRects = []
 
     // Позиция камеры
     const cameraTrap = getObjectByName('camera-trap')

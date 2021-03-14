@@ -115,7 +115,7 @@
 возможность оформить свой уникальный код, переведя его из `binary` в `decimal` систему.
 
 Вся логика, определяющая куда "выталкивать" объект в зависимости от типа, определена в
-классе `src/world/collider.js`, а сам вызов в функции `collideObject` класса `src/world/collide-object.js`.
+классе `src/world/platformer-collider.js`, а сам вызов в функции `collideObject` класса `src/world/hitboxes-helper.js`.
 
 #### Каждая сторона платформы определяется своим битом
 

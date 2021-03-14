@@ -1,3 +1,7 @@
+import { Collider } from '../../collider'
+import { getCollisionMap, getSizesBy } from './utils'
+import { Rect } from '../../base/rect'
+
 export const CollisionType = {
   top: 'top',
   bottom: 'bottom',
@@ -9,9 +13,15 @@ export const CollisionType = {
  * Здесь происходит вся магия вычисления коллизий в зависимости на какой тип ячейки врезался игрок.
  * Внимание! Сейчас необходимо, чтобы размеры игрока соотв. одному спрайту карты.
  * */
-export class Collider {
+export class PlatformerCollider extends Collider {
   constructor() {
-    //
+    super()
+  }
+
+  init(limitRect, collisionObjects, tileMap) {
+    super.init(limitRect, collisionObjects, tileMap)
+    this.collisionMap = getCollisionMap(collisionObjects, tileMap)
+    this._getSizes = getSizesBy(tileMap)
   }
 
   /**
@@ -19,7 +29,7 @@ export class Collider {
    * frame the top of the object was below the bottom of the tile, we have entered into
    * this tile. Pretty simple stuff.
    * */
-  collidePlatformBottom(object, tileBottom) {
+  _collidePlatformBottom(object, tileBottom) {
     if (object.getTop() < tileBottom && object.getOldTop() >= tileBottom) {
       object.setTop(tileBottom)  // Move the top of the object to the bottom of the tile.
       object.velocityY = 0       // Stop moving in that direction.
@@ -29,7 +39,7 @@ export class Collider {
     return false
   }
 
-  collidePlatformLeft(object, tileLeft) {
+  _collidePlatformLeft(object, tileLeft) {
     if (object.getRight() > tileLeft && object.getOldRight() <= tileLeft) {
       object.setRight(tileLeft - 0.01) // -0.01 is to fix a small problem with rounding
       object.velocityX = 0
@@ -39,7 +49,7 @@ export class Collider {
     return false
   }
 
-  collidePlatformRight(object, tileRight) {
+  _collidePlatformRight(object, tileRight) {
     if (object.getLeft() < tileRight && object.getOldLeft() >= tileRight) {
       object.setLeft(tileRight)
       object.velocityX = 0
@@ -49,7 +59,7 @@ export class Collider {
     return false
   }
 
-  collidePlatformTop(object, tileTop) {
+  _collidePlatformTop(object, tileTop) {
     if (object.getBottom() > tileTop && object.getOldBottom() <= tileTop) {
       object.setBottom(tileTop - 0.01)
       object.velocityY = 0
@@ -64,7 +74,7 @@ export class Collider {
    * Конвертация кода коллизий в 2 формат с лидирующими нулями.
    * На выходе всегда должно быть 4 символа.
    * */
-  dec2Bin(dec) {
+  _dec2Bin(dec) {
     const bin = (dec >>> 0).toString(2)
     return `${'0'.repeat(4 - bin.length)}${bin}`
   }
@@ -83,7 +93,7 @@ export class Collider {
    * как нативно привести запись '0010' к 0b0010?
    *
    * */
-  checkBit(left, right) {
+  _checkBit(left, right) {
     const position = right.indexOf('1')
     return left[position] === '1'
   }
@@ -115,10 +125,10 @@ export class Collider {
    * @param tileY y координата ячвейки
    * @param size размер спрайта
    * */
-  collide(value, index, object, tileX, tileY, size) {
+  _collide(value, index, object, tileX, tileY, size) {
     const { width, height } = size
 
-    const bin = this.dec2Bin(value)
+    const bin = this._dec2Bin(value)
 
     /*
       Сперва проверяем коллизию, когда объект продвигается слева-направо или справа-налево
@@ -128,22 +138,70 @@ export class Collider {
       остальные коллизии.
     */
 
-    if (this.checkBit(bin, '0010')) {
-      if (this.collidePlatformRight(object, tileX + width)) return CollisionType.right
+    if (this._checkBit(bin, '0010')) {
+      if (this._collidePlatformRight(object, tileX + width)) return CollisionType.right
     }
-    if (this.checkBit(bin, '1000')) {
+    if (this._checkBit(bin, '1000')) {
       // left
-      if (this.collidePlatformLeft(object, tileX)) return CollisionType.left
+      if (this._collidePlatformLeft(object, tileX)) return CollisionType.left
     }
-    if (this.checkBit(bin, '0001')) {
+    if (this._checkBit(bin, '0001')) {
       // top
-      if (this.collidePlatformTop(object, tileY)) return CollisionType.top
+      if (this._collidePlatformTop(object, tileY)) return CollisionType.top
     }
-    if (this.checkBit(bin,'0100')) {
+    if (this._checkBit(bin,'0100')) {
       // bottom
-      if (this.collidePlatformBottom(object, tileY + height)) return CollisionType.bottom
+      if (this._collidePlatformBottom(object, tileY + height)) return CollisionType.bottom
     }
 
     return null
+  }
+
+  collide(object) {
+    const collides = []
+    object.collisions = []
+
+    const { size, columns } = this.tileMap
+    const { width, height } = size
+
+    let bottom, left, right, top, value, index, collisionType
+
+    top = this._getSizes(object).top
+    left = this._getSizes(object).left
+    collides.push(new Rect(left * width, top * height, width, height))
+
+    index = top * columns + left
+    value = this.collisionMap[index]
+    collisionType = this._collide(value, index, object, left * width, top * height, size)
+    if (collisionType) object.collisions.push(collisionType)
+
+    top = this._getSizes(object).top
+    right = this._getSizes(object).right
+    collides.push(new Rect(right * width, top * height, width, height))
+
+    index = top * columns + right
+    value = this.collisionMap[index]
+    collisionType = this._collide(value, index, object, right * width, top * height, size)
+    if (collisionType) object.collisions.push(collisionType)
+
+    bottom = this._getSizes(object).bottom
+    left = this._getSizes(object).left
+    collides.push(new Rect(left * width, bottom * height, width, height))
+
+    index = bottom * columns + left
+    value = this.collisionMap[index]
+    collisionType = this._collide(value, index, object, left * width, bottom * height, size)
+    if (collisionType) object.collisions.push(collisionType)
+
+    bottom = this._getSizes(object).bottom
+    right = this._getSizes(object).right
+    collides.push(new Rect(right * width, bottom * height, width, height))
+
+    index = bottom * columns + right
+    value = this.collisionMap[index]
+    collisionType = this._collide(value, index, object, right * width, bottom * height, size)
+    if (collisionType) object.collisions.push(collisionType)
+
+    return collides
   }
 }

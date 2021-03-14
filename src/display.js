@@ -239,6 +239,30 @@ export class Display {
     }
   }
 
+  drawLine({ p1, p2, color = 'black', sticky = false }) {
+    this.buffer.beginPath()
+
+    let destinationP1x = Math.round(p1.x)
+    let destinationP1y = Math.round(p1.y)
+
+    let destinationP2x = Math.round(p2.x)
+    let destinationP2y = Math.round(p2.y)
+
+    if (!sticky && this.camera) {
+      destinationP1x -= this.camera.x
+      destinationP1y -= this.camera.y
+
+      destinationP2x -= this.camera.x
+      destinationP2y -= this.camera.y
+    }
+
+    this.buffer.moveTo(destinationP1x, destinationP1y)
+    this.buffer.lineTo(destinationP2x, destinationP2y)
+    this.buffer.strokeStyle = color
+    this.buffer.lineWidth = 1
+    this.buffer.stroke()
+  }
+
   /**
    * Отрисовка рамки по заданным координатам и цветом.
    * @param sticky если true, то будет не учитываться позиция камеры
