@@ -1,7 +1,8 @@
 import { Ray, RayDirection } from '../../base/ray'
 import { Vector } from '../../base/vector'
 import { Collider } from '../../collider'
-import { get45degreesBy, getLineRectCollision } from './utils'
+import { get45degreesBy } from './utils'
+import { CollisionDetected } from '../../collision-detected'
 
 // Компенсация, чтобы лучи по вертикали или горизонтали не наслаивались с хитбоксами
 const OFFSET = 0.01
@@ -87,7 +88,7 @@ export class RayCastCollider extends Collider {
       case RayDirection.bottomLeft:
       case RayDirection.topRight:
       case RayDirection.topLeft:
-        return getLineRectCollision(ray, rect)
+        return CollisionDetected.isLineRect(ray, rect)
     }
 
     return false

@@ -14,13 +14,12 @@ import { CheckCoins } from './checks/check-coins'
 import { CheckHMovingObjects } from './checks/check-hmoving-objects'
 
 import { Environment } from './environment'
-import { checkRectCollision } from '../utils'
 import { ObjectType, PlayerType } from './constants'
 
 // Colliders
 import { RayCastCollider } from './colliders/raycast-collider'
-import { PlatformerCollider } from './colliders/platformer-collider'
 import { HitBoxesHelper } from './hitboxes-helper'
+import { CollisionDetected } from '../collision-detected'
 
 export class World {
   constructor({ friction = 0.85, gravity = 2, createLevel }) {
@@ -64,7 +63,6 @@ export class World {
     const { limitRect, collisionObjects, tileMap } = this.level
 
     this.env.init(limitRect, collisionObjects, tileMap)
-    this.hitBoxesHelper.init(tileMap)
     this.env.addMob(this.player)
     this.playerAnimation.watch(this.player)
     this.level.watch(this.player)
@@ -115,13 +113,13 @@ export class World {
     this.checkCoins?.update(this.hitBoxesHelper.getHitBoxes(this.player))
 
     if (this.level.nextLevelGate && this.level.isCanMoveToTheNextLevel()) {
-      if (checkRectCollision(this.player, this.level.nextLevelGate)) {
+      if (CollisionDetected.isRectRect(this.player, this.level.nextLevelGate)) {
         this.createLevel(this.level.nextLevel)
       }
     }
 
     // if (this.level.prevLevelGate) {
-    //   if (checkRectCollision(this.player, this.level.prevLevelGate)) {
+    //   if (CollisionDetected.isRectRect(this.player, this.level.prevLevelGate)) {
     //     this.createLevel(this.level.prevLevel)
     //   }
     // }

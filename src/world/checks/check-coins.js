@@ -1,7 +1,6 @@
-import { checkRectCollision } from '../../utils'
-
 import { MoveCoinToPlayer } from './move-coin-to-player'
 import { JobList } from '../job/job-list'
+import { CollisionDetected } from '../../collision-detected'
 
 export class CheckCoins {
   constructor(player, coinsStaticAnimation) {
@@ -27,7 +26,7 @@ export class CheckCoins {
     if (this.coinsStaticAnimation.objects.length) {
       const coinsNearPlayer = this.coinsStaticAnimation.points.filter(coin => {
         return playerCollisionRects.some(rect => {
-          return checkRectCollision(coin, rect)
+          return CollisionDetected.isRectRect(coin, rect)
         })
       })
 

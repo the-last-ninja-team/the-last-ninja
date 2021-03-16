@@ -26,6 +26,7 @@ export class Mob extends MovingObject {
   jump() {
     if (!this.jumping && this.velocityY < 10) {
       this.crouching = false
+      this.hitBox = this.originHitBox
       this.jumping = true
       this.velocityY -= this.jumpPower
     }
@@ -33,12 +34,14 @@ export class Mob extends MovingObject {
 
   moveLeft() {
     this.crouching = false
+    this.hitBox = this.originHitBox
     this.directionX = -1
     this.velocityX -= this.speed
   }
 
   moveRight() {
     this.crouching = false
+    this.hitBox = this.originHitBox
     this.directionX = 1
     this.velocityX += this.speed
   }
@@ -49,7 +52,7 @@ export class Mob extends MovingObject {
       if (!this.crouching) {
         this.hitBox = this.originHitBox
       } else {
-        this.hitBox = {...this.originHitBox, height: this.originHitBox.height / 2}
+        this.hitBox = { ...this.originHitBox, height: this.originHitBox.height / 2 }
       }
     }
   }
