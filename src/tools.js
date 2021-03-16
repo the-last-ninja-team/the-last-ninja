@@ -91,6 +91,10 @@ export class Tools {
         this.main.game.world.hitBoxes.forEach(hitBox => {
           this.main.display.drawStroke({ ...hitBox, color: HITBOX_COLOR })
         })
+
+        this.main.game.world.level.collisionObjects.forEach(hitBox => {
+          this.main.display.drawStroke({ ...hitBox, color: HITBOX_COLOR })
+        })
       }
 
       if (this.collideCheckboxEl.checked) {

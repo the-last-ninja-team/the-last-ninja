@@ -1,15 +1,19 @@
 import { Line } from './line'
 
 export const RayDirection = {
-  up: 'up',
-  down: 'down',
+  top: 'top',
+  bottom: 'bottom',
   left: 'left',
-  right: 'right'
+  right: 'right',
+  topLeft: 'topLeft',
+  topRight: 'topRight',
+  bottomLeft: 'bottomLeft',
+  bottomRight: 'bottomRight'
 }
 
 export class Ray extends Line {
-  constructor(p1, p2, direction) {
-    super(p1, p2)
+  constructor(start, end, direction) {
+    super(start, end)
 
     this.direction = direction
   }

@@ -239,14 +239,14 @@ export class Display {
     }
   }
 
-  drawLine({ p1, p2, color = 'black', sticky = false }) {
+  drawLine({ start, end, color = 'black', sticky = false }) {
     this.buffer.beginPath()
 
-    let destinationP1x = Math.round(p1.x)
-    let destinationP1y = Math.round(p1.y)
+    let destinationP1x = Math.round(start.x)
+    let destinationP1y = Math.round(start.y)
 
-    let destinationP2x = Math.round(p2.x)
-    let destinationP2y = Math.round(p2.y)
+    let destinationP2x = Math.round(end.x)
+    let destinationP2y = Math.round(end.y)
 
     if (!sticky && this.camera) {
       destinationP1x -= this.camera.x
