@@ -1,7 +1,7 @@
 import { Ray, RayDirection } from '../../base/ray'
 import { Vector } from '../../base/vector'
 import { Collider } from '../../collider'
-import { get45degreesBy } from './utils'
+import { get45degreesBy, getLineRectCollision } from './utils'
 
 // Компенсация, чтобы лучи по вертикали или горизонтали не наслаивались с хитбоксами
 const OFFSET = 0.01
@@ -83,9 +83,14 @@ export class RayCastCollider extends Collider {
         return x <= start.x && x + width >= start.x && start.y >= y
       case RayDirection.bottom:
         return x <= start.x && x + width >= start.x && start.y <= y
-      default:
-        return false
+      case RayDirection.bottomRight:
+      case RayDirection.bottomLeft:
+      case RayDirection.topRight:
+      case RayDirection.topLeft:
+        return getLineRectCollision(ray, rect)
     }
+
+    return false
   }
 
   /**
@@ -123,6 +128,12 @@ export class RayCastCollider extends Collider {
           case RayDirection.bottom:
             closer = hitBox.y < closerHitBox.y
             break
+          case RayDirection.bottomRight:
+          case RayDirection.bottomLeft:
+          case RayDirection.topRight:
+          case RayDirection.topLeft:
+            // TODO: ищем ближайший объект
+            break
         }
 
         if (closer) closerHitBox = hitBox
@@ -154,6 +165,13 @@ export class RayCastCollider extends Collider {
             break
           case RayDirection.bottom:
             ray.end.y = hitBox.y
+            break
+          case RayDirection.bottomRight:
+          case RayDirection.bottomLeft:
+          case RayDirection.topRight:
+          case RayDirection.topLeft:
+            // TODO: ищем точку входа луча в объект
+            // @see http://www.jeffreythompson.org/collision-detection/line-rect.php
             break
         }
       }
