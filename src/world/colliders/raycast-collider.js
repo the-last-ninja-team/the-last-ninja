@@ -51,47 +51,32 @@ export class RayCastCollider extends Collider {
       new Ray(new Vector(mob.getRight() - OFFSET, mob.getBottom()),
         new Vector(mob.getRight() - OFFSET, this.limitRect.height + OUT_OFF_OFFSET), RayDirection.bottom),
       // Угол 45 верхний-левый
-      new Ray(new Vector(mob.x,  mob.y), this._get45degrees(mob.x, mob.y, RayDirection.topLeft), RayDirection.topLeft),
+      new Ray(new Vector(mob.x + OFFSET,  mob.y + OFFSET),
+        this._get45degrees(mob.x + OFFSET, mob.y + OFFSET, RayDirection.topLeft), RayDirection.topLeft),
       // Угол 45 верхний-правый
-      new Ray(new Vector(mob.getRight(), mob.y), this._get45degrees(mob.getRight(), mob.y, RayDirection.topRight),
+      new Ray(new Vector(mob.getRight() - OFFSET, mob.y + OFFSET),
+        this._get45degrees(mob.getRight() - OFFSET, mob.y + OFFSET, RayDirection.topRight),
         RayDirection.topRight),
       // Угол 45 нижний-левый
-      new Ray(new Vector(mob.x, mob.getBottom()), this._get45degrees(mob.x, mob.getBottom(), RayDirection.bottomLeft),
+      new Ray(new Vector(mob.x + OFFSET, mob.getBottom() - OFFSET),
+        this._get45degrees(mob.x + OFFSET, mob.getBottom() - OFFSET, RayDirection.bottomLeft),
         RayDirection.bottomLeft),
       // Угол 45 нижний-правый
-      new Ray(new Vector(mob.getRight(), mob.getBottom()),
-        this._get45degrees(mob.getRight(), mob.getBottom(), RayDirection.bottomRight), RayDirection.bottomRight)
+      new Ray(new Vector(mob.getRight() - OFFSET, mob.getBottom() - OFFSET),
+        this._get45degrees(mob.getRight() - OFFSET, mob.getBottom() - OFFSET, RayDirection.bottomRight),
+        RayDirection.bottomRight)
     ]
   }
 
   /**
    * Проверяем, происходит ли пересечении прямоугольника с "лучом"
-   * @param rect прямоугольник на карте
+   * @param object прямоугольник на карте
    * @param ray луч
    * @return boolean true - когда есть пересечение
    * @private
    * */
-  _checkRectCollisionWithRay(rect, ray) {
-    const { start, end, direction } = ray
-    const { x, y, width, height } = rect
-
-    switch (direction) {
-      case RayDirection.right:
-        return y <= end.y && y + height >= end.y && start.x <= x
-      case RayDirection.left:
-        return y <= end.y && y + height >= end.y && start.x >= x
-      case RayDirection.top:
-        return x <= start.x && x + width >= start.x && start.y >= y
-      case RayDirection.bottom:
-        return x <= start.x && x + width >= start.x && start.y <= y
-      case RayDirection.bottomRight:
-      case RayDirection.bottomLeft:
-      case RayDirection.topRight:
-      case RayDirection.topLeft:
-        return CollisionDetected.isLineRect(ray, rect)
-    }
-
-    return false
+  _checkObjectCollisionWithRay(object, ray) {
+    return CollisionDetected.isLineRect(ray, object)
   }
 
   /**
@@ -101,78 +86,70 @@ export class RayCastCollider extends Collider {
    * @return null - если нет значения или объект, удовлетворяющий критерию
    * @private
    * */
-  _getCloserHitBox(hitBoxes, ray) {
+  _getClosestHitBox(hitBoxes, ray) {
     if (!hitBoxes.length) {
       // Если массив пустой, то возвращаем null
       return null
-    } else if (hitBoxes.length === 1) {
-      // Если только один элемент, то сразу возвращаем его
-      return hitBoxes[0]
     }
 
-    let closerHitBox = null
+    let closestDistance = 0
+    let closestHitBox = null
+    let closestHitBoxPoint = null
+
     hitBoxes.forEach(hitBox => {
-      if (closerHitBox) {
-        let closer = false
-
-        // В зависимости от типа "луча", производим сравнение по X или Y координате
-        switch (ray.direction) {
-          case RayDirection.right:
-            closer = hitBox.x < closerHitBox.x
-            break
-          case RayDirection.left:
-            closer = hitBox.x > closerHitBox.x
-            break
-          case RayDirection.top:
-            closer = hitBox.y > closerHitBox.y
-            break
-          case RayDirection.bottom:
-            closer = hitBox.y < closerHitBox.y
-            break
-          case RayDirection.bottomRight:
-          case RayDirection.bottomLeft:
-          case RayDirection.topRight:
-          case RayDirection.topLeft:
-            // TODO: ищем ближайший объект
-            break
-        }
-
-        if (closer) closerHitBox = hitBox
-      } else {
-        closerHitBox = hitBox
-      }
+      hitBox.collision.points
+        .filter(({ isColliding }) => isColliding)
+        .forEach(({ point }) => {
+          const distance = point.distanceFrom(ray.start)
+          if (distance < closestDistance || closestDistance === 0) {
+            closestDistance = distance
+            closestHitBox = hitBox
+            closestHitBoxPoint = point
+          }
+        })
     })
 
-    return closerHitBox
+    return {
+      hitBox: closestHitBox,
+      point: closestHitBoxPoint
+    }
   }
 
-  _getNormalizeRays(mob) {
+  _getNormalizedRays(mob) {
     const rays = this._getBaseRays(mob)
 
     rays.forEach(ray => {
-      const hitBoxes = this.collisionObjects.filter(hitBox => this._checkRectCollisionWithRay(hitBox, ray))
-      const hitBox = this._getCloserHitBox(hitBoxes, ray)
-      if (hitBox) {
+      const hitBoxesWithCollision = this.collisionObjects.map(object => {
+        return {
+          object,
+          collision: this._checkObjectCollisionWithRay(object, ray)
+        }
+      }).filter(({ collision }) => collision.isColliding)
+
+      const closestHitBox = this._getClosestHitBox(hitBoxesWithCollision, ray)
+      if (closestHitBox) {
+        const { point, hitBox: { object } } = closestHitBox
+
         // Относительно ближайшего хитбокса, корректируем длину луча
         switch (ray.direction) {
           case RayDirection.right:
-            ray.end.x = hitBox.x
+            ray.end.x = object.x
             break
           case RayDirection.left:
-            ray.end.x = hitBox.x + hitBox.width
+            ray.end.x = object.x + object.width
             break
           case RayDirection.top:
-            ray.end.y = hitBox.y + hitBox.height
+            ray.end.y = object.y + object.height
             break
           case RayDirection.bottom:
-            ray.end.y = hitBox.y
+            ray.end.y = object.y
             break
           case RayDirection.bottomRight:
           case RayDirection.bottomLeft:
           case RayDirection.topRight:
           case RayDirection.topLeft:
-            // TODO: ищем точку входа луча в объект
-            // @see http://www.jeffreythompson.org/collision-detection/line-rect.php
+            ray.end.x = point.x
+            ray.end.y = point.y
             break
         }
       }
@@ -202,7 +179,7 @@ export class RayCastCollider extends Collider {
    * */
   collide(mob) {
     super.collide(mob)
-    return this._getNormalizeRays(mob)
+    return this._getNormalizedRays(mob)
   }
 
   check(mob, gravity, friction) {
@@ -248,6 +225,6 @@ export class RayCastCollider extends Collider {
     mob.x = newX
     mob.y = newY
 
-    return this._getNormalizeRays(mob)
+    return this._getNormalizedRays(mob)
   }
 }

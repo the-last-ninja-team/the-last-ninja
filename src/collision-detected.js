@@ -28,7 +28,10 @@ export class CollisionDetected {
       / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1))
 
     // if uA and uB are between 0-1, lines are colliding
-    return uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1
+    return {
+      isColliding: uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1,
+      point: new Vector(x1 + (uA * (x2 - x1)), y1 + (uA * (y2 - y1)))
+    }
   }
 
   static isLineRect(line, rect) {
@@ -44,6 +47,9 @@ export class CollisionDetected {
     const top = this.isLineLine(line, topLine)
     const bottom = this.isLineLine(line, bottomLine)
 
-    return left || right || top || bottom
+    return {
+      isColliding: left.isColliding || right.isColliding || top.isColliding || bottom.isColliding,
+      points: [left, right, top, bottom]
+    }
   }
 }
