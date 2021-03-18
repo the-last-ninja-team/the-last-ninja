@@ -1,5 +1,6 @@
-import { Rect } from './base/rect'
-import { Ray } from './base/ray'
+import { Rect } from '#base/rect'
+import { Ray } from '#base/ray'
+import { Polygon } from '#base/polygon'
 
 const COLLIDE_COLOR = 'yellow'
 const HITBOX_COLOR = 'red'
@@ -93,7 +94,11 @@ export class Tools {
         })
 
         this.main.game.world.level.collisionObjects.forEach(hitBox => {
-          this.main.display.drawStroke({ ...hitBox, color: HITBOX_COLOR })
+          if (hitBox instanceof Rect) {
+            this.main.display.drawStroke({ ...hitBox, color: HITBOX_COLOR })
+          } else if (hitBox instanceof Polygon) {
+            this.main.display.drawPolygon({ ...hitBox, color: HITBOX_COLOR })
+          }
         })
       }
 

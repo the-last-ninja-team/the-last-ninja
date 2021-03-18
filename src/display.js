@@ -239,9 +239,37 @@ export class Display {
     }
   }
 
-  drawLine({ start, end, color = 'black', sticky = false }) {
+  drawPolygon({ x, y, points, color = 'black', sticky = false }) {
     this.buffer.beginPath()
 
+    let destinationX = Math.round(x)
+    let destinationY = Math.round(y)
+
+    if (!sticky && this.camera) {
+      destinationX -= this.camera.x
+      destinationY -= this.camera.y
+    }
+
+    this.buffer.moveTo(destinationX, destinationY)
+
+    points.forEach(point => {
+      destinationX = Math.round(point.x)
+      destinationY = Math.round(point.y)
+
+      if (!sticky && this.camera) {
+        destinationX -= this.camera.x
+        destinationY -= this.camera.y
+      }
+
+      this.buffer.lineTo(destinationX, destinationY)
+    })
+
+    this.buffer.strokeStyle = color
+    this.buffer.lineWidth = 1
+    this.buffer.stroke()
+  }
+
+  drawLine({ start, end, color = 'black', sticky = false }) {
     let destinationP1x = Math.round(start.x)
     let destinationP1y = Math.round(start.y)
 
@@ -256,6 +284,7 @@ export class Display {
       destinationP2y -= this.camera.y
     }
 
+    this.buffer.beginPath()
     this.buffer.moveTo(destinationP1x, destinationP1y)
     this.buffer.lineTo(destinationP2x, destinationP2y)
     this.buffer.strokeStyle = color

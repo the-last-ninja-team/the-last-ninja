@@ -1,4 +1,6 @@
 import { Ray, RayDirection } from '#base/ray'
+import { Polygon } from '#base/polygon'
+import { Rect } from '#base/rect'
 import { Vector } from '#base/vector'
 import { Collider } from '#/collider'
 import { get45degreesBy } from './utils'
@@ -141,7 +143,13 @@ export class RayCastCollider extends Collider {
    * @private
    * */
   _checkObjectCollisionWithRay(object, ray) {
-    return CollisionDetected.isLineRect(ray, object)
+    if (object instanceof Rect) {
+      return CollisionDetected.isLineRect(ray, object)
+    } else if (object instanceof Polygon) {
+      return CollisionDetected.isLinePolygon(ray, object)
+    }
+
+    return null
   }
 
   /**
@@ -189,33 +197,38 @@ export class RayCastCollider extends Collider {
           object,
           collision: this._checkObjectCollisionWithRay(object, ray)
         }
-      }).filter(({ collision }) => collision.isColliding)
+      }).filter(({ collision }) => collision?.isColliding)
 
       const closestHitBox = this._getClosestHitBox(hitBoxesWithCollision, ray)
       if (closestHitBox) {
         const { point, hitBox: { object } } = closestHitBox
 
         // Относительно ближайшего хитбокса, корректируем длину луча
-        switch (ray.direction) {
-          case RayDirection.right:
-            ray.end.x = object.x
-            break
-          case RayDirection.left:
-            ray.end.x = object.x + object.width
-            break
-          case RayDirection.top:
-            ray.end.y = object.y + object.height
-            break
-          case RayDirection.bottom:
-            ray.end.y = object.y
-            break
-          case RayDirection.bottomRight:
-          case RayDirection.bottomLeft:
-          case RayDirection.topRight:
-          case RayDirection.topLeft:
-            ray.end.x = point.x
-            ray.end.y = point.y
-            break
+        if (object instanceof Polygon) {
+          ray.end.x = point.x
+          ray.end.y = point.y
+        } else {
+          switch (ray.direction) {
+            case RayDirection.right:
+              ray.end.x = object.x
+              break
+            case RayDirection.left:
+              ray.end.x = object.x + object.width
+              break
+            case RayDirection.top:
+              ray.end.y = object.y + object.height
+              break
+            case RayDirection.bottom:
+              ray.end.y = object.y
+              break
+            case RayDirection.bottomRight:
+            case RayDirection.bottomLeft:
+            case RayDirection.topRight:
+            case RayDirection.topLeft:
+              ray.end.x = point.x
+              ray.end.y = point.y
+              break
+          }
         }
       }
     })

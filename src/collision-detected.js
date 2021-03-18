@@ -52,4 +52,22 @@ export class CollisionDetected {
       points: [left, right, top, bottom]
     }
   }
+
+  static isLinePolygon(line, polygon) {
+    const { lines } = polygon
+    for (let i = 0; i < lines.length; i ++) {
+      const result = this.isLineLine(line, lines[i])
+      if (result.isColliding) {
+        return {
+          isColliding: true,
+          points: [result]
+        }
+      }
+    }
+
+    return {
+      isColliding: false,
+      points: []
+    }
+  }
 }
