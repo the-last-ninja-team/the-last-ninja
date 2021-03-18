@@ -1,8 +1,8 @@
-import { Rect } from '../base/rect'
-import { Resources } from '../resources'
-import { StaticMapAnimation } from '../graphic/static-map-animation'
+import { Rect } from '#base/rect'
+import { Resources } from '#/resources'
+import { StaticMapAnimation } from '#graphic/static-map-animation'
 import { LevelImagesStore } from './level-images-store'
-import { LayerType } from '../level-images-draw'
+import { LayerType } from '#/level-images-draw'
 
 const findByName = (array) => (name) => {
   return array.find((object) => object.name === name)

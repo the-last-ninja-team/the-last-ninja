@@ -1,4 +1,4 @@
-import { Animator, AnimatorMode } from '../../graphic/animator'
+import { Animator, AnimatorMode } from '#graphic/animator'
 import { EnemyInterpreter } from '../interpreters/enemy-interpreter'
 
 export class EnemyAnimation extends Animator {

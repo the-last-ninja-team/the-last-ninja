@@ -1,7 +1,7 @@
-import { Img } from '../graphic/img'
-import { Sprite } from '../graphic/sprite'
-import { ParallaxImage } from '../graphic/parallax-image'
-import { LayerType } from '../level-images-draw'
+import { Img } from '#graphic/img'
+import { Sprite } from '#graphic/sprite'
+import { ParallaxImage } from '#graphic/parallax-image'
+import { LayerType } from '#/level-images-draw'
 
 /**
  * Хранилище для картинок, спрайтов, статичной анимации и т.д.

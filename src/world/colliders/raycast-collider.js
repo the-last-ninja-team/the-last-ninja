@@ -1,8 +1,8 @@
-import { Ray, RayDirection } from '../../base/ray'
-import { Vector } from '../../base/vector'
-import { Collider } from '../../collider'
+import { Ray, RayDirection } from '#base/ray'
+import { Vector } from '#base/vector'
+import { Collider } from '#/collider'
 import { get45degreesBy } from './utils'
-import { CollisionDetected } from '../../collision-detected'
+import { CollisionDetected } from '#/collision-detected'
 
 // Компенсация прямых лучей
 const RAY_OFFSET_X = 14

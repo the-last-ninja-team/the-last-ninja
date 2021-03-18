@@ -1,6 +1,6 @@
-import { getTileMapPoints, RectPosition } from '../../utils'
-import { StaticMapAnimation } from '../../graphic/static-map-animation'
-import { Resources } from '../../resources'
+import { getTileMapPoints, RectPosition } from '#/utils'
+import { StaticMapAnimation } from '#graphic/static-map-animation'
+import { Resources } from '#/resources'
 
 export const createCoinsStaticAnimation = (levelMap, levelTiles) => {
   const coinsBoxes = levelMap.layers.find(({ name }) => name === 'coins')

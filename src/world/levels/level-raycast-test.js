@@ -1,9 +1,9 @@
 import { Level } from '../level'
-import { LEVELS } from '../../constants'
-import { Resources } from '../../resources'
+import { LEVELS } from '#/constants'
+import { Resources } from '#/resources'
 
 const LEVEL_TILES = Resources.getSprite('levelRayCastTest-tileset')
-const levelMap = require('../../assets/level-maps/levelRayCastTest.json')
+const levelMap = require('#assets/level-maps/levelRayCastTest.json')
 
 export class LevelRayCastTest extends Level {
   constructor() {

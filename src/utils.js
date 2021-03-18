@@ -1,4 +1,4 @@
-import { Rect } from './base/rect'
+import { Rect } from '#base/rect'
 
 export const RectPosition = {
   default: 'default',

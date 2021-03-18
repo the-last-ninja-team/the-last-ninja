@@ -1,6 +1,6 @@
-import { Collider } from '../../collider'
+import { Collider } from '#/collider'
 import { getCollisionMap, getSizesBy } from './utils'
-import { Rect } from '../../base/rect'
+import { Rect } from '#base/rect'
 
 export const CollisionType = {
   top: 'top',

@@ -1,7 +1,7 @@
-import { Animator, AnimatorMode } from '../../../graphic/animator'
-import { NinjaInterpreter } from '../../interpreters/ninja-interpreter'
-import { AnimationSets } from '../../../graphic/animation-sets'
-import { CollisionType } from '../../colliders/platformer-collider'
+import { Animator, AnimatorMode } from '#graphic/animator'
+import { NinjaInterpreter } from '#world/interpreters/ninja-interpreter'
+import { AnimationSets } from '#graphic/animation-sets'
+import { CollisionType } from '#world/colliders/platformer-collider'
 
 import { NinjaAnimationDelay, NinjaActionType } from './constants'
 

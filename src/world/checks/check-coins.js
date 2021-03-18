@@ -1,6 +1,6 @@
 import { MoveCoinToPlayer } from './move-coin-to-player'
 import { JobList } from '../job/job-list'
-import { CollisionDetected } from '../../collision-detected'
+import { CollisionDetected } from '#/collision-detected'
 
 export class CheckCoins {
   constructor(player, coinsStaticAnimation) {

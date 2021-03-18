@@ -1,11 +1,11 @@
 import { Level } from '../level'
-import { getImageScreenCountsByX } from '../../utils'
-import { Resources } from '../../resources'
-import { ParallaxDirection, ParallaxType } from '../../graphic/parallax-image'
+import { getImageScreenCountsByX } from '#/utils'
+import { Resources } from '#/resources'
+import { ParallaxDirection, ParallaxType } from '#graphic/parallax-image'
 import { ParallaxAnimation } from '../animation/parallax-animation'
 import { createCoinsStaticAnimation } from './helpers'
-import { LEVELS } from '../../constants'
-import { LayerType } from '../../level-images-draw'
+import { LEVELS } from '#/constants'
+import { LayerType } from '#/level-images-draw'
 
 const LEVEL_TILES = Resources.getSprite('level01-tileset')
 const SEA_IMAGE = Resources.getImg('level01-sea')
@@ -13,7 +13,7 @@ const SKY_IMAGE = Resources.getImg('level01-sky')
 const CLOUDS_IMAGE = Resources.getImg('level01-clouds')
 const FAR_GROUNDS_IMAGE  = Resources.getImg('level01-far-grounds')
 
-const levelMap = require('../../assets/level-maps/level01.json')
+const levelMap = require('#assets/level-maps/level01.json')
 
 export class Level01 extends Level {
   constructor() {

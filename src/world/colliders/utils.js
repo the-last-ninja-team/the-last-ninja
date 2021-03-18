@@ -1,5 +1,5 @@
-import { Vector } from '../../base/vector'
-import { RayDirection } from '../../base/ray'
+import { Vector } from '#base/vector'
+import { RayDirection } from '#base/ray'
 
 export const getCollisionMap = (collisionObjects, tileMap) => {
   const collisionMap = [...Array.from({ length: tileMap.rows * tileMap.columns }).map(() => 0)]

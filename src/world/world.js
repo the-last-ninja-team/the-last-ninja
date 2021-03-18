@@ -19,7 +19,7 @@ import { ObjectType, PlayerType } from './constants'
 // Colliders
 import { RayCastCollider } from './colliders/raycast-collider'
 import { HitBoxesHelper } from './hitboxes-helper'
-import { CollisionDetected } from '../collision-detected'
+import { CollisionDetected } from '#/collision-detected'
 
 export class World {
   constructor({ friction = 0.85, gravity = 2, createLevel }) {

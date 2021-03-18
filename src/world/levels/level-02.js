@@ -1,16 +1,16 @@
 import { Level } from '../level'
-import { Resources } from '../../resources'
+import { Resources } from '#/resources'
 import { createCoinsStaticAnimation } from './helpers'
-import {getImageScreenCountsByX} from "../../utils";
-import { LEVELS } from '../../constants'
-import { LayerType } from '../../level-images-draw'
+import { getImageScreenCountsByX } from '#/utils'
+import { LEVELS } from '#/constants'
+import { LayerType } from '#/level-images-draw'
 
 const LEVEL_TILES = Resources.getSprite('level02-tileset')
 const SEA_IMAGE = Resources.getImg('level01-sea')
 const SKY_IMAGE = Resources.getImg('level01-sky')
 const CLOUDS_IMAGE = Resources.getImg('level01-clouds')
 
-const levelMap = require('../../assets/level-maps/level02.json')
+const levelMap = require('#assets/level-maps/level02.json')
 
 export class Level02 extends Level {
   constructor() {
