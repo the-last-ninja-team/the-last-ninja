@@ -1,5 +1,5 @@
-import { Line } from './base/line'
-import { Vector } from './base/vector'
+import { Line } from '#base/line'
+import { Vector } from '#base/vector'
 
 export class CollisionDetected {
   constructor() {

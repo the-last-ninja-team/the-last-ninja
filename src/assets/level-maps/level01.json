@@ -253,17 +253,6 @@
          "objects":[
                 {
                  "height":16,
-                 "id":100,
-                 "name":"player",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":64,
-                 "y":176
-                }, 
-                {
-                 "height":16,
                  "id":101,
                  "name":"next-level-gate",
                  "rotation":0,
@@ -305,6 +294,28 @@
                  "width":128,
                  "x":112,
                  "y":80
+                }, 
+                {
+                 "height":32,
+                 "id":126,
+                 "name":"player",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":64,
+                 "y":160
+                }, 
+                {
+                 "height":0,
+                 "id":127,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":65.684360021303,
+                 "y":36.5702112551039
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -577,7 +588,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":125,
+ "nextobjectid":128,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.4.3",
