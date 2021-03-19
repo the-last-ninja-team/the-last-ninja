@@ -17,7 +17,6 @@ export class Tools {
     this.player = null
 
     this.debugInfoEl = document.getElementById('debug-info')
-    this.gridCheckboxEl = document.getElementById('grid')
     this.collideCheckboxEl = document.getElementById('collide')
     this.hitBoxesCheckboxEl = document.getElementById('hitboxes')
     this.cameraCheckboxEl = document.getElementById('camera')
@@ -80,13 +79,6 @@ export class Tools {
 
   render() {
     if (this.isDebug) {
-      if (this.gridCheckboxEl.checked) {
-        // Рисуем сетку уровня
-        const { tileMap } = this.main.game.world.level
-        const { collisionMap } = this.main.game.world.env.collider
-        this.main.display.drawMapGrid(tileMap, collisionMap ?? [])
-      }
-
       if (this.hitBoxesCheckboxEl.checked) {
         // Рисуем все хитбоксы красным цветом
         this.main.game.world.hitBoxes.forEach(hitBox => {

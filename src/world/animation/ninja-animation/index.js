@@ -1,7 +1,6 @@
 import { Animator, AnimatorMode } from '#graphic/animator'
 import { NinjaInterpreter } from '#world/interpreters/ninja-interpreter'
 import { AnimationSets } from '#graphic/animation-sets'
-import { CollisionType } from '#world/colliders/platformer-collider'
 
 import { NinjaAnimationDelay, NinjaActionType } from './constants'
 
@@ -81,13 +80,6 @@ export class NinjaAnimation extends Animator {
         || this.airSwordAttacks.equals(this.animation)
   }
 
-  // Проверяем наличие заданных коллизий в данный момент
-  isCollisionTypes(types) {
-    return this.mob.collisions.filter(collision => {
-      return types.some(type => type === collision)
-    }).length > 0
-  }
-
   // Флаг, определяющий нужно ли прерывать длинную анимацию
   isInterrupted() {
     return this.interpreter.isCrouching() // когда присели
@@ -97,11 +89,6 @@ export class NinjaAnimation extends Animator {
           || (this.isActionType(NinjaActionType.bowAttacking) && (this.interpreter.isCasting() || this.interpreter.isSwordAttacking()))
           // когда атакуем мечом и начали кастовать или стрелять из лука
           || (this.isActionType(NinjaActionType.swordAttacking) && (this.interpreter.isCasting() || this.interpreter.isBowAttacking()))
-          // когда в прыжке или в момент атаки на земле, но слева или справа находится коллизия (т.е. мы уперлись в стену и хотим атаковать)
-          // чтобы анимация не выходила за пределы стены
-          || ((this.mob.jumping || this.isCollisionTypes([CollisionType.left, CollisionType.right])) && this.isGroundAttack())
-          // когда производится атака в воздухе и сверху или снизу находится коллизия (т.е. мы приземлились на платформу или ударились голой в нее)
-          || (this.isCollisionTypes([CollisionType.top, CollisionType.bottom]) && this.isAirAttack())
           // когда стреляем из лука, кастуем или ударяем мечом и начали падать
           || this.isGroundAttack() && this.interpreter.isFalling()
   }

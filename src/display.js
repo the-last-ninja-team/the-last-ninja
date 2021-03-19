@@ -350,23 +350,4 @@ export class Display {
       0, 0, this.buffer.canvas.width, this.buffer.canvas.height,
       0, 0, this.context.canvas.width, this.context.canvas.height)
   }
-
-  /** Рисуем сетку уровня */
-  drawMapGrid(tileMap, map) {
-    const { columns, size } = tileMap
-    const { width, height } = size
-
-    let x = 0
-    let y = 0
-
-    map.forEach((value, index) => {
-      this.drawStroke({ x, y, width, height, color: 'yellow', lineWidth: 0.05 })
-      this.drawText({ text: `${index}`, x: x + 2, y: y + 8 })
-      x += width
-      if ((index + 1) % columns === 0) {
-        x = 0
-        y += height
-      }
-    })
-  }
 }

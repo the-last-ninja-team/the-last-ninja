@@ -87,52 +87,6 @@ export class RayCastCollider extends Collider {
           RayDirection.bottomRight),
         RayDirection.bottomRight)
     ]
-
-    // return [
-    //   // Верхний-левый угол влево
-    //   new Ray(new Vector(mob.x,  mob.y), new Vector(0, mob.y), RayDirection.left),
-    //   // Нижний-левый угол влево
-    //   new Ray(new Vector(mob.x, mob.getBottom() - RAY_OFFSET),
-    //     new Vector(0, mob.getBottom() - RAY_OFFSET), RayDirection.left),
-    //   // Верхний-правый угол вправо
-    //   new Ray(new Vector(mob.getRight(), mob.y), new Vector(this.limitRect.width, mob.y), RayDirection.right),
-    //   // Нижний-правый угол вправо
-    //   new Ray(new Vector(mob.getRight(), mob.getBottom() - RAY_OFFSET),
-    //     new Vector(this.limitRect.width, mob.getBottom() - RAY_OFFSET), RayDirection.right),
-    //   // Верхний-левый угол вверх
-    //   new Ray(new Vector(mob.x + RAY_OFFSET, mob.y),
-    //     new Vector(mob.x + RAY_OFFSET, -OUT_OFF_Y_AXIOS_OFFSET), RayDirection.top),
-    //   // Верхний-правый угол вверх
-    //   new Ray(new Vector(mob.getRight() - RAY_OFFSET, mob.y),
-    //     new Vector(mob.getRight() - RAY_OFFSET, -OUT_OFF_Y_AXIOS_OFFSET), RayDirection.top),
-    //   // Нижний-левый угол вниз
-    //   new Ray(new Vector(mob.x + RAY_OFFSET, mob.getBottom()),
-    //     new Vector(mob.x + RAY_OFFSET, this.limitRect.height + OUT_OFF_Y_AXIOS_OFFSET), RayDirection.bottom),
-    //   // Нижний-правый угол вниз
-    //   new Ray(new Vector(mob.getRight() - RAY_OFFSET, mob.getBottom()),
-    //     new Vector(mob.getRight() - RAY_OFFSET, this.limitRect.height + OUT_OFF_Y_AXIOS_OFFSET),
-    //     RayDirection.bottom),
-    //   // Угол 45 верхний-левый
-    //   new Ray(new Vector(mob.x + RAY_AT_ANGLE_OFFSET,  mob.y + RAY_AT_ANGLE_OFFSET),
-    //     this._get45degrees(mob.x + RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET,
-    //       RayDirection.topLeft),
-    //     RayDirection.topLeft),
-    //   // Угол 45 верхний-правый
-    //   new Ray(new Vector(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET),
-    //     this._get45degrees(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET,
-    //       RayDirection.topRight),
-    //     RayDirection.topRight),
-    //   // Угол 45 нижний-левый
-    //   new Ray(new Vector(mob.x + RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET),
-    //     this._get45degrees(mob.x + RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET,
-    //       RayDirection.bottomLeft),
-    //     RayDirection.bottomLeft),
-    //   // Угол 45 нижний-правый
-    //   new Ray(new Vector(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET),
-    //     this._get45degrees(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET,
-    //       RayDirection.bottomRight),
-    //     RayDirection.bottomRight)
-    // ]
   }
 
   /**
