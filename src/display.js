@@ -8,6 +8,7 @@ export class Display {
   /**
    * Конструктор
    * @param canvas ссылка на канву, которую определили ранее
+   * @param camera камера, относительно которой будем двигать, т.е. создавать эффект движения
    */
   constructor(canvas, camera) {
     /**
@@ -164,7 +165,7 @@ export class Display {
    * }
    * */
   drawSprite(sprite, props) {
-    const { width, height, offsetX = 0, offsetY = 0 } = props ?? {}
+    const { width, height, offsetX = 0, offsetY = 0, camera } = props ?? {}
 
     // x и y координаты берем как есть
     let destinationX = Math.round(sprite.x)
@@ -191,9 +192,10 @@ export class Display {
     destinationHeight += (Math.abs(offsetY) * 2)
 
     if (this.camera) {
+      const { offCameraX = false, offCameraY = false } = camera ?? {}
       // Если установлена камера, то корректируем X и Y координаты относительно её
-      destinationX -= this.camera.x
-      destinationY -= this.camera.y
+      if (!offCameraX) destinationX -= this.camera.x
+      if (!offCameraY) destinationY -= this.camera.y
     }
 
     if (sprite.flipped) {
@@ -235,6 +237,59 @@ export class Display {
       this.buffer.strokeStyle = 'black'
       this.buffer.strokeRect(destinationX, destinationY, destinationWidth, destinationHeight)
     }
+  }
+
+  drawPolygon({ x, y, points, color = 'black', sticky = false }) {
+    this.buffer.beginPath()
+
+    let destinationX = Math.round(x)
+    let destinationY = Math.round(y)
+
+    if (!sticky && this.camera) {
+      destinationX -= this.camera.x
+      destinationY -= this.camera.y
+    }
+
+    this.buffer.moveTo(destinationX, destinationY)
+
+    points.forEach(point => {
+      destinationX = Math.round(point.x)
+      destinationY = Math.round(point.y)
+
+      if (!sticky && this.camera) {
+        destinationX -= this.camera.x
+        destinationY -= this.camera.y
+      }
+
+      this.buffer.lineTo(destinationX, destinationY)
+    })
+
+    this.buffer.strokeStyle = color
+    this.buffer.lineWidth = 1
+    this.buffer.stroke()
+  }
+
+  drawLine({ start, end, color = 'black', sticky = false }) {
+    let destinationP1x = Math.round(start.x)
+    let destinationP1y = Math.round(start.y)
+
+    let destinationP2x = Math.round(end.x)
+    let destinationP2y = Math.round(end.y)
+
+    if (!sticky && this.camera) {
+      destinationP1x -= this.camera.x
+      destinationP1y -= this.camera.y
+
+      destinationP2x -= this.camera.x
+      destinationP2y -= this.camera.y
+    }
+
+    this.buffer.beginPath()
+    this.buffer.moveTo(destinationP1x, destinationP1y)
+    this.buffer.lineTo(destinationP2x, destinationP2y)
+    this.buffer.strokeStyle = color
+    this.buffer.lineWidth = 1
+    this.buffer.stroke()
   }
 
   /**
@@ -294,24 +349,5 @@ export class Display {
       this.buffer.canvas,
       0, 0, this.buffer.canvas.width, this.buffer.canvas.height,
       0, 0, this.context.canvas.width, this.context.canvas.height)
-  }
-
-  /** Рисуем сетку уровня */
-  drawMapGrid(tileMap, map) {
-    const { columns, size } = tileMap
-    const { width, height } = size
-
-    let x = 0
-    let y = 0
-
-    map.forEach((value, index) => {
-      this.drawStroke({ x, y, width, height, color: 'yellow', lineWidth: 0.05 })
-      this.drawText({ text: `${index}`, x: x + 2, y: y + 8 })
-      x += width
-      if ((index + 1) % columns === 0) {
-        x = 0
-        y += height
-      }
-    })
   }
 }

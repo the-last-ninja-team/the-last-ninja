@@ -1,4 +1,4 @@
-import { Img } from './img'
+import { Sprite } from './sprite'
 
 export const ParallaxDirection = {
   forward: 'forward',
@@ -26,19 +26,19 @@ export class ParallaxImage {
     this.type = type
     this.space = space
     this.count = 0
-    this.images = []
+    this.sprites = []
 
     const counts = Math.floor(screenWidth / (width + space)) + 2
 
     let x = 0
     for (let i = 0; i < counts; i ++) {
-      this.images.push(this.createImage(x))
+      this.sprites.push(this.createSprite(x))
       x += width + space
     }
   }
 
-  createImage(x) {
-    return new Img({
+  createSprite(x) {
+    return new Sprite({
       name: this.name,
       x,
       y: this.y,
@@ -58,21 +58,21 @@ export class ParallaxImage {
   }
 
   nextFrame() {
-    this.images.forEach(image => {
+    this.sprites.forEach(image => {
       const x = image.x + (this.direction === ParallaxDirection.forward ? -this.step : this.step)
       image.setXY(Math.round(x), this.y)
     })
 
-    const first = this.images[0]
-    const last = this.images[this.images.length - 1]
-    const others = this.images.filter((_, index) => index > 0 && index < this.images.length - 1)
+    const first = this.sprites[0]
+    const last = this.sprites[this.sprites.length - 1]
+    const others = this.sprites.filter((_, index) => index > 0 && index < this.sprites.length - 1)
 
     if (this.direction === ParallaxDirection.forward && (first.x + first.width + this.space <= 0)) {
       first.setXY(last.x + last.width + this.space, this.y)
-      this.images = [...others, last, first]
+      this.sprites = [...others, last, first]
     } else if (this.direction === ParallaxDirection.backward && (first.x >= 0)) {
       last.setXY(-((last.width + this.space) - first.x), this.y)
-      this.images = [last, first, ...others]
+      this.sprites = [last, first, ...others]
     }
   }
 

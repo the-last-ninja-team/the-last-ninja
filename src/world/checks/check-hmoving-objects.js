@@ -1,4 +1,4 @@
-import { Animator, AnimatorMode } from '../../graphic/animator'
+import { Animator, AnimatorMode } from '#graphic/animator'
 
 const proxyHandler = {
   set(target, prop, val) {

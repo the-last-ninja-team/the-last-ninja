@@ -1,6 +1,6 @@
 import { Job } from '../job/job'
-import { Rect } from '../../base/rect'
-import { Vector } from '../../base/vector'
+import { Rect } from '#base/rect'
+import { Vector } from '#base/vector'
 
 export class MoveCoinToPlayer extends Job {
   constructor(player, coin) {

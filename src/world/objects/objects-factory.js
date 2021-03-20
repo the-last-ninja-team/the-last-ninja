@@ -1,4 +1,4 @@
-import { HMovingObject } from '../../base/hmoving-object'
+import { HMovingObject } from '#base/hmoving-object'
 import { Ninja } from './ninja'
 import { Enemy } from './enemy'
 

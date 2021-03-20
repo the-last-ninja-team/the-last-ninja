@@ -1,6 +1,6 @@
-import { TilesetSpriteSheet } from '../graphic/tileset-sprite-sheet'
-import { Resources } from '../resources'
-import { SpriteSheet } from '../graphic/sprite-sheet'
+import { TilesetSpriteSheet } from '#graphic/tileset-sprite-sheet'
+import { Resources } from '#/resources'
+import { SpriteSheet } from '#graphic/sprite-sheet'
 
 const SKELETON_TILES = Resources.getSprite('skeleton-tiles')
 const FLYING_EYE_TILES = Resources.getSprite('flying-eye-tiles')
@@ -51,23 +51,26 @@ export const ObjectType = {
 
 export const PlayerType = {
   tiles: () => ({
-    main: new TilesetSpriteSheet(NINJA_TILES, require('../assets/animation-maps/ninja.json')),
-    bow: new TilesetSpriteSheet(NINJA_BOW_TILES, require('../assets/animation-maps/ninja-bow.json')),
-    sword: new TilesetSpriteSheet(NINJA_SWORD_RUN_TILES, require('../assets/animation-maps/ninja-sword.json'))
+    main: new TilesetSpriteSheet(NINJA_TILES, require('#assets/animation-maps/ninja.json')),
+    bow: new TilesetSpriteSheet(NINJA_BOW_TILES, require('#assets/animation-maps/ninja-bow.json')),
+    sword: new TilesetSpriteSheet(NINJA_SWORD_RUN_TILES, require('#assets/animation-maps/ninja-sword.json'))
   }),
   props: {
     width: 16,
-    height: 16,
-    jumpPower: 32,
+    height: 32,
+    jumpPower: 22.5,
     speed: 1.55,
-    hitBox: { width: 16, height: 32 }
+    hitBox: {
+      base: { width: 16, height: 32 },
+      crouch: { width: 16, height: 16 }
+    }
   }
 }
 
 export const EnemyType = {
   skeleton: {
     key: 'skeleton',
-    tiles: () => new TilesetSpriteSheet(SKELETON_TILES, require('../assets/animation-maps/skeleton.json')),
+    tiles: () => new TilesetSpriteSheet(SKELETON_TILES, require('#assets/animation-maps/skeleton.json')),
     delays: {
       idle: 5,
       attack: 2,
@@ -77,17 +80,16 @@ export const EnemyType = {
       takeHit: 2
     },
     props: {
-      width: 16,
-      height: 16,
+      width: 32,
+      height: 48,
       jumpPower: 0,
       speed: 0.8,
-      hitBox: { width: 32, height: 48 },
       isCanBlocking: true
     }
   },
   flyingEye: {
     key: 'flying-eye',
-    tiles: () => new TilesetSpriteSheet(FLYING_EYE_TILES, require('../assets/animation-maps/flying-eye.json')),
+    tiles: () => new TilesetSpriteSheet(FLYING_EYE_TILES, require('#assets/animation-maps/flying-eye.json')),
     delays: {
       idle: 3,
       attack: 2,
@@ -97,16 +99,15 @@ export const EnemyType = {
       takeHit: 2
     },
     props: {
-      width: 16,
-      height: 16,
+      width: 32,
+      height: 32,
       jumpPower: 0,
       speed: 1.2,
-      hitBox: { width: 32, height: 32 }
     }
   },
   goblin: {
     key: 'goblin',
-    tiles: () => new TilesetSpriteSheet(GOBLIN_TILES, require('../assets/animation-maps/goblin.json')),
+    tiles: () => new TilesetSpriteSheet(GOBLIN_TILES, require('#assets/animation-maps/goblin.json')),
     delays: {
       idle: 5,
       attack: 2,
@@ -117,16 +118,15 @@ export const EnemyType = {
     },
     props: {
       width: 16,
-      height: 16,
+      height: 32,
       jumpPower: 0,
       speed: 1.65,
-      hitBox: { width: 16, height: 32 }
     }
 
   },
   mushroom: {
     key: 'mushroom',
-    tiles: () => new TilesetSpriteSheet(MUSHROOM_TILES, require('../assets/animation-maps/mushroom.json')),
+    tiles: () => new TilesetSpriteSheet(MUSHROOM_TILES, require('#assets/animation-maps/mushroom.json')),
     delays: {
       idle: 5,
       attack: 2,
@@ -137,10 +137,9 @@ export const EnemyType = {
     },
     props: {
       width: 16,
-      height: 16,
+      height: 32,
       jumpPower: 0,
       speed: 0.7,
-      hitBox: { width: 16, height: 32 }
     }
   }
 }

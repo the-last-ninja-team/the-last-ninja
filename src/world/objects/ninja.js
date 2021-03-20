@@ -1,5 +1,5 @@
-import { Mob } from '../../base/mob'
-import { MobAction } from '../../base/mob-action'
+import { Mob } from '#base/mob'
+import { MobAction } from '#base/mob-action'
 
 export class Ninja extends Mob {
   constructor(props) {

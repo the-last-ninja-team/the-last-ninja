@@ -39,18 +39,18 @@ export class NinjaInterpreter {
   // Прыжок
   isJumping() {
     const { velocityY } = this.ninja
-    return velocityY < 0 && velocityY < -17
+    return velocityY < 0 && velocityY < -this.ninja.jumpPower
   }
 
   // Падение
   isFalling() {
-    return this.ninja.velocityY >= 11
+    return this.ninja.velocityY > 0
   }
 
   // Переворот (верхняя точка прыжка)
   isFlipping() {
     const { velocityY } = this.ninja
-    return velocityY < 0 && velocityY >= -17
+    return velocityY < 0 && velocityY >= -this.ninja.jumpPower
   }
 
   // Ожидание

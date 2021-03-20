@@ -5,6 +5,7 @@ import { Game } from './game'
 import { MainCamera } from './main-camera'
 import { Tools } from './tools';
 
+import { LayerType, LevelImagesDraw } from './level-images-draw'
 import { ImageLoader } from './loaders/image-loader'
 import { Resources } from './resources'
 
@@ -47,6 +48,7 @@ export class Main {
     this.game = new Game(this.createLevel.bind(this))
     this.engine = new Engine(timeStep, this.update, this.render)
     this.playerController = this.game.world.getPlayerController(this.controller)
+    this.imagesDraw = new LevelImagesDraw(this.display)
 
     window.addEventListener('resize', this.resize)
     window.addEventListener('keydown', this.keyDownUp)
@@ -80,30 +82,7 @@ export class Main {
   }
 
   createLevelSprite() {
-    const { key, map, spriteSheet, limitRect, cameraTrap, screenRect } = this.game.world.level
-    const levelMap = {
-      width: map.width,
-      height: map.height,
-      spriteWidth: map.tilewidth,
-      spriteHeight: map.tileheight
-    }
-    this.game.world.level.levelSprite = this.display.createMap(
-      key,
-      {
-        ...levelMap,
-        layers: map.layers.filter(({ name, type }) => {
-          return type === 'tilelayer' && name !== 'before-layer'
-        })
-      }, spriteSheet)
-
-    this.game.world.level.beforeSprite = this.display.createMap(
-      `${key}-before-sprite`,
-      {
-        ...levelMap,
-        layers: map.layers.filter(({ name, type }) => {
-          return type === 'tilelayer' && name === 'before-layer'
-        })
-      }, spriteSheet)
+    const { limitRect, cameraTrap, screenRect } = this.game.world.level
 
     // Создаем нужные спрайты уровня
     this.game.world.level.createImages(this.display, this.camera)
@@ -113,7 +92,9 @@ export class Main {
     this.display.buffer.canvas.height = screenRect.height
 
     // Инициализируем камеру по параметрам уровня
-    this.camera.init({ edgeRect: cameraTrap, limitRect, screenRect })
+    this.camera.init({ cameraTrap, limitRect, screenRect })
+    // Инициализируем объект для отрисовки слоев уровня
+    this.imagesDraw.init(this.game.world.level.imagesStore)
   }
 
   keyDownUp(event) {
@@ -137,17 +118,13 @@ export class Main {
     // Цвет фона
     this.display.fill(this.game.world.backgroundColor)
     // Рисуем все что до карты уровня
-    this.game.world.level.images.forEach(image => this.display.drawImg(image))
-    // Рисуем параллакс, все что после бэкграунда и до карты уровня
-    this.game.world.level.parallaxes.forEach(parallax => {
-      parallax.images.forEach(image => this.display.drawImg(image))
-    })
-    // Рисуем карту уровня
-    this.display.drawSprite(this.game.world.level.levelSprite)
-    // Рисуем всю статичную анимацию (сейчас это монетки)
-    this.game.world.level.staticAnimations.forEach(staticAnimation => {
-      this.display.drawStaticAnimation(staticAnimation)
-    })
+    this.imagesDraw.drawLayer(LayerType.background)
+    // Рисуем все что после бэкграунда и до карты уровня
+    this.imagesDraw.drawLayer(LayerType.afterBackground)
+    // Рисуем карту уровня - level layer
+    this.imagesDraw.drawLayer(LayerType.level)
+    // Рисуем всю статичную анимацию
+    this.imagesDraw.drawLayer(LayerType.staticAnimation)
 
     // Рисуем анимацию противников
     this.game.world.enemies.enemyAnimations.forEach(({ animation }) => {
@@ -164,8 +141,8 @@ export class Main {
       this.display.drawSprite(object.ref.animation, { width, height })
     })
 
-    // Рисуем, что должно быть поверх всего
-    this.display.drawSprite(this.game.world.level.beforeSprite)
+    // Рисуем, что должно быть поверх всего - front layer
+    this.imagesDraw.drawLayer(LayerType.front)
 
     // Если в режиме "Debug"
     this.tools.render()

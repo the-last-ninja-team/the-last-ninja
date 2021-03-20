@@ -2,27 +2,36 @@ import { NinjaAnimation } from './animation/ninja-animation'
 import { NinjaController } from './controllers/ninja-controller'
 
 import { ObjectsFactory } from './objects/objects-factory'
-import { CollideObject } from './collide-object'
 import { Enemies } from './enemies';
 
+// Levels
 import { Level01 } from './levels/level-01'
 import { Level02 } from './levels/level-02'
+import { LevelRayCastTest } from './levels/level-raycast-test'
 
+// Checking objects
 import { CheckCoins } from './checks/check-coins'
 import { CheckHMovingObjects } from './checks/check-hmoving-objects'
 
 import { Environment } from './environment'
-import { checkRectCollision } from '../utils'
 import { ObjectType, PlayerType } from './constants'
+
+// Colliders
+import { RayCastCollider } from './colliders/raycast-collider'
+import { HitBoxesHelper } from './hitboxes-helper'
+import { CollisionDetected } from '#/collision-detected'
 
 export class World {
   constructor({ friction = 0.85, gravity = 2, createLevel }) {
     // Цвет фона
     this.backgroundColor = 'grey'
     this.createLevel = createLevel
+    this.hitBoxes = []
 
-    this.collider = new CollideObject()
-    this.env = new Environment(friction, gravity, this.collider)
+    // Окружение, куда будем помещать все объекты (противники, игрок, стрелы и т.д.)
+    this.env = new Environment(friction, gravity, new RayCastCollider())
+    // Хелпер для чтения хитбоксов объектов
+    this.hitBoxesHelper = new HitBoxesHelper()
     // Противники
     this.enemies = new Enemies(this.env)
     // Анимация игрока
@@ -37,6 +46,9 @@ export class World {
       case '02':
         this.level = new Level02()
         break
+      case 'RayCastTest':
+        this.level = new LevelRayCastTest()
+        break
       default:
         throw new Error(`Unsupported level value ${level}`)
     }
@@ -47,9 +59,11 @@ export class World {
   initLevel() {
     const { x, y } = this.level.playerPosition
     this.player = ObjectsFactory.createPlayer(x, y, PlayerType.props)
-    this.collider.setLevel(this.level)
 
-    this.env.init(this.level.limitRect)
+    const { limitRect, collisionObjects, tileMap, respawns } = this.level
+
+    this.env.init({
+      limitRect, collisionObjects, tileMap, respawns })
     this.env.addMob(this.player)
     this.playerAnimation.watch(this.player)
     this.level.watch(this.player)
@@ -69,7 +83,11 @@ export class World {
 
     this.player.castAction.callback = this.checkFireballs.fire.bind(this.checkFireballs)
     this.player.bowAttackAction.callback = this.checkArrows.fire.bind(this.checkArrows)
-    this.checkCoins = new CheckCoins(this.player, this.level.coinsStaticAnimation)
+    if (this.level.coinsStaticAnimation) {
+      this.checkCoins = new CheckCoins(this.player, this.level.coinsStaticAnimation)
+    } else {
+      this.checkCoins = null
+    }
   }
 
   getPlayerController(controller) {
@@ -85,23 +103,26 @@ export class World {
     this.playerAnimation.update()
     this.enemies.update()
 
-    this.level.collisionRects = this.env.getAllCollisionRects()
+    const coinsHitBoxes = this.hitBoxesHelper.getCoinsHitBoxes(this.player, this.level.tileMap.size)
+    this.hitBoxes = this.env.mobs.map(mob => this.hitBoxesHelper.getHitBox(mob))
       .concat(this.checkFireballs.objects.map(object => {
-          return this.collider.getCollisionRects(object, true)
-        }).flat())
+          return this.hitBoxesHelper.getHitBox(object, true)
+        }))
       .concat(this.checkArrows.objects.map(object => {
-          return this.collider.getCollisionRects(object, true)
-        }).flat())
-    this.checkCoins.update(this.env.getMobCollisionRects(this.player))
+          return this.hitBoxesHelper.getHitBox(object, true)
+        }))
+      .concat(coinsHitBoxes)
+
+    this.checkCoins?.update(coinsHitBoxes)
 
     if (this.level.nextLevelGate && this.level.isCanMoveToTheNextLevel()) {
-      if (checkRectCollision(this.player, this.level.nextLevelGate)) {
+      if (CollisionDetected.isRectRect(this.player, this.level.nextLevelGate)) {
         this.createLevel(this.level.nextLevel)
       }
     }
 
     // if (this.level.prevLevelGate) {
-    //   if (checkRectCollision(this.player, this.level.prevLevelGate)) {
+    //   if (CollisionDetected.isRectRect(this.player, this.level.prevLevelGate)) {
     //     this.createLevel(this.level.prevLevel)
     //   }
     // }

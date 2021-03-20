@@ -6,8 +6,6 @@ export class SimpleObject extends Rect {
 
     this.oldX = x
     this.oldY = y
-
-    this.collisions = []
   }
 
   getBottom() {

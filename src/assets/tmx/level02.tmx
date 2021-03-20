@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="left-up" width="50" height="25" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="144">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="left-up" width="50" height="25" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="147">
  <editorsettings>
-  <export target="../level02/level02.json" format="json"/>
+  <export target="../level-maps/level02.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="level02.tsx"/>
  <layer id="13" name="background-layer" width="50" height="25">
@@ -265,12 +265,12 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="9" name="level" visible="0">
-  <object id="1" name="screen" x="0" y="0" width="800" height="400"/>
-  <object id="2" name="camera-trap" x="288" y="0" width="128" height="400"/>
-  <object id="6" name="player" x="32" y="256" width="16" height="16"/>
+ <objectgroup id="9" name="level">
   <object id="142" name="prev-level-gate" x="0" y="256" width="16" height="16"/>
   <object id="143" name="next-level-arrow" x="768" y="304" width="16" height="32"/>
+  <object id="144" name="player" x="32" y="240" width="16" height="32"/>
+  <object id="145" name="screen" x="0" y="160" width="288" height="192"/>
+  <object id="146" name="camera-trap" x="64" y="64" width="80" height="64"/>
  </objectgroup>
  <objectgroup id="11" name="collisions" visible="0">
   <object id="8" type="1" x="0" y="272" width="192" height="16"/>

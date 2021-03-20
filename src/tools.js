@@ -1,3 +1,10 @@
+import { Rect } from '#base/rect'
+import { Ray } from '#base/ray'
+import { Polygon } from '#base/polygon'
+
+const COLLIDE_COLOR = 'yellow'
+const HITBOX_COLOR = 'red'
+
 /**
  * Набор инструментов для отладки.
  * Сейчас только чек-бокс "Debug", который вкл/откл рамки вокруг всех объектов и коллизий
@@ -6,39 +13,47 @@ export class Tools {
   constructor(main) {
     this.main = main
     this.isDebug = false
-    this.isShowGrid = false
+    this.isDebugRects = false
     this.player = null
 
-    this.debugInfo = document.getElementById('debug-info')
+    this.debugInfoEl = document.getElementById('debug-info')
+    this.collideCheckboxEl = document.getElementById('collide')
+    this.hitBoxesCheckboxEl = document.getElementById('hitboxes')
+    this.cameraCheckboxEl = document.getElementById('camera')
 
     this.handleDebugClick = this.handleDebugClick.bind(this)
-    this.handleGridClick = this.handleGridClick.bind(this)
-    this.handleStopSlick = this.handleStopSlick.bind(this)
+    this.handleDebugRectsClick = this.handleDebugRectsClick.bind(this)
+    this.handleStopClick = this.handleStopClick.bind(this)
 
-    const debugCheckbox = document.getElementById('debug')
-    debugCheckbox.addEventListener('click', this.handleDebugClick)
+    const debugCheckboxEl = document.getElementById('debug')
+    debugCheckboxEl.addEventListener('click', this.handleDebugClick)
 
-    const gridCheckbox = document.getElementById('grid')
-    gridCheckbox.addEventListener('click', this.handleGridClick)
+    const debugRectsCheckboxEl = document.getElementById('rects')
+    debugRectsCheckboxEl.addEventListener('click', this.handleDebugRectsClick)
 
-    const stopCheckbox = document.getElementById('stop')
-    stopCheckbox.addEventListener('click', this.handleStopSlick)
+    const stopCheckboxEl = document.getElementById('stop')
+    stopCheckboxEl.addEventListener('click', this.handleStopClick)
   }
 
   watch(player) {
     this.player = player
   }
 
+  checkDisplayDebug() {
+    this.main.display.isDebug = this.isDebug && this.isDebugRects
+  }
+
   handleDebugClick(event) {
     this.isDebug = event.target.checked
-    this.main.display.isDebug = this.isDebug
+    this.checkDisplayDebug()
   }
 
-  handleGridClick(event) {
-    this.isShowGrid = event.target.checked
+  handleDebugRectsClick(event) {
+    this.isDebugRects = event.target.checked
+    this.checkDisplayDebug()
   }
 
-  handleStopSlick(event) {
+  handleStopClick(event) {
     if (event.target.checked) {
       this.main.engine.stop()
     } else {
@@ -49,7 +64,7 @@ export class Tools {
   update() {
     if (this.player) {
       const { x, oldX, y, oldY, width, height, velocityX, velocityY } = this.player
-      this.debugInfo.value = JSON.stringify({
+      this.debugInfoEl.value = JSON.stringify({
         x: Math.round(x),
         oldX: Math.round(oldX),
         y: Math.round(y),
@@ -64,21 +79,38 @@ export class Tools {
 
   render() {
     if (this.isDebug) {
-      if (this.isShowGrid) {
-        // Рисуем сетку уровня
-        const { tileMap, collisionMap } = this.main.game.world.level
-        this.main.display.drawMapGrid(tileMap, collisionMap)
+      if (this.hitBoxesCheckboxEl.checked) {
+        // Рисуем все хитбоксы красным цветом
+        this.main.game.world.hitBoxes.forEach(hitBox => {
+          this.main.display.drawStroke({ ...hitBox, color: HITBOX_COLOR })
+        })
+
+        this.main.game.world.level.collisionObjects.forEach(hitBox => {
+          if (hitBox instanceof Rect) {
+            this.main.display.drawStroke({ ...hitBox, color: HITBOX_COLOR })
+          } else if (hitBox instanceof Polygon) {
+            this.main.display.drawPolygon({ ...hitBox, color: HITBOX_COLOR })
+          }
+        })
       }
 
-      // Рисуем все коллизии красным цветом
-      this.main.game.world.level.collisionRects.forEach(rect => {
-        this.main.display.drawStroke({...rect, color: 'red'})
-      })
+      if (this.collideCheckboxEl.checked) {
+        // Рисуем все лучи синим цветом
+        this.main.game.world.env.collides.forEach(collide => {
+          if (collide instanceof Rect) {
+            this.main.display.drawStroke({ ...collide, color: COLLIDE_COLOR })
+          } else if (collide instanceof Ray) {
+            this.main.display.drawLine({ ...collide, color: COLLIDE_COLOR })
+          }
+        })
+      }
 
       // Рисуем границы камеры игрока, заданным цветом
-      this.main.camera.rects.forEach((({rect, color, sticky}) => {
-        this.main.display.drawStroke({...rect, color, sticky})
-      }))
+      if (this.cameraCheckboxEl.checked) {
+        this.main.camera.rects.forEach((({rect, color, sticky}) => {
+          this.main.display.drawStroke({ ...rect, color, sticky })
+        }))
+      }
     }
   }
 }

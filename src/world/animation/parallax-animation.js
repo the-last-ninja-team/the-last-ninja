@@ -1,4 +1,4 @@
-import { ParallaxDirection } from '../../graphic/parallax-image'
+import { ParallaxDirection } from '#graphic/parallax-image'
 
 export class ParallaxAnimation {
   constructor({ parallax, camera, screenRect, cameraTrap, limitRect }) {

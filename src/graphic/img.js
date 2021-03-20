@@ -1,4 +1,4 @@
-import { Rect } from '../base/rect'
+import { Rect } from '#base/rect'
 
 export class Img extends Rect {
   constructor({ name, x = 0, y = 0, width, height }) {

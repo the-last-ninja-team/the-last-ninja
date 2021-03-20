@@ -1,4 +1,4 @@
-import { Rect } from './base/rect'
+import { Rect } from '#base/rect'
 
 export const RectPosition = {
   default: 'default',
@@ -56,17 +56,6 @@ export const getTileMapPoints = (tileMap, size, props) => {
   })
 
   return points
-}
-
-/**
- * Функция для чтения коллизии между 2мя прямоугольниками
- * @return boolean true - если коллизия есть
- * */
-export const checkRectCollision = (rect1, rect2) => {
-  return (rect1.x < rect2.x + rect2.width &&
-    rect1.x + rect1.width > rect2.x &&
-    rect1.y < rect2.y + rect2.height &&
-    rect1.y + rect1.height > rect2.y)
 }
 
 /** Функция читающая площадь пересечения 2х прямоугольников */
