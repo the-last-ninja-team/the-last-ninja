@@ -1,3 +1,5 @@
+import {findClosesRespawnPoint} from "#world/environment/utils";
+
 export class Environment {
   constructor(friction, gravity, collider) {
     this.friction = friction
@@ -5,10 +7,11 @@ export class Environment {
     this.collider = collider
   }
 
-  init(limitRect, collisionObjects, tileMap) {
+  init({ limitRect, collisionObjects, tileMap, respawns }) {
     this.mobs = []
     this.collides = []
     this.limitRect = limitRect
+    this.respawns = respawns
     this.collider.init(limitRect, collisionObjects, tileMap)
   }
 
@@ -26,8 +29,11 @@ export class Environment {
       mob.velocityX = 0
       mob.velocityY = 0
       mob.jumping = false
-      mob.x = mob.originX
-      mob.y = mob.originY
+
+      const respawn = findClosesRespawnPoint(mob, this.respawns)
+
+      mob.x = respawn.x
+      mob.y = respawn.y
     }
   }
 

@@ -60,7 +60,10 @@ export const PlayerType = {
     height: 32,
     jumpPower: 22.5,
     speed: 1.55,
-    hitBox: { width: 16, height: 32 }
+    hitBox: {
+      base: { width: 16, height: 32 },
+      crouch: { width: 16, height: 16 }
+    }
   }
 }
 
@@ -77,11 +80,10 @@ export const EnemyType = {
       takeHit: 2
     },
     props: {
-      width: 16,
-      height: 16,
+      width: 32,
+      height: 48,
       jumpPower: 0,
       speed: 0.8,
-      hitBox: { width: 32, height: 48 },
       isCanBlocking: true
     }
   },
@@ -97,11 +99,10 @@ export const EnemyType = {
       takeHit: 2
     },
     props: {
-      width: 16,
-      height: 16,
+      width: 32,
+      height: 32,
       jumpPower: 0,
       speed: 1.2,
-      hitBox: { width: 32, height: 32 }
     }
   },
   goblin: {
@@ -117,10 +118,9 @@ export const EnemyType = {
     },
     props: {
       width: 16,
-      height: 16,
+      height: 32,
       jumpPower: 0,
       speed: 1.65,
-      hitBox: { width: 16, height: 32 }
     }
 
   },
@@ -137,10 +137,9 @@ export const EnemyType = {
     },
     props: {
       width: 16,
-      height: 16,
+      height: 32,
       jumpPower: 0,
       speed: 0.7,
-      hitBox: { width: 16, height: 32 }
     }
   }
 }

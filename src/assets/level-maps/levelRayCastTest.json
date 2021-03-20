@@ -276,19 +276,19 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":112,
-                 "y":224
+                 "x":623.754587155963,
+                 "y":213.965596330275
                 }, 
                 {
-                 "height":240,
+                 "height":207.746559633028,
                  "id":11,
                  "name":"screen",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":400,
-                 "x":0,
-                 "y":160
+                 "width":358.428899082569,
+                 "x":427.178899082569,
+                 "y":122.729357798165
                 }, 
                 {
                  "height":48,
@@ -303,7 +303,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],

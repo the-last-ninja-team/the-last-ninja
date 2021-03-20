@@ -3,14 +3,14 @@ import { Polygon } from '#base/polygon'
 import { Rect } from '#base/rect'
 import { Vector } from '#base/vector'
 import { Collider } from '#/collider'
-import { get45degreesBy } from './utils'
+// import { get45degreesBy } from './utils'
 import { CollisionDetected } from '#/collision-detected'
 
 // Компенсация прямых лучей
 const RAY_OFFSET_X = 14
 const RAY_OFFSET_Y = 7
 // Компенсация лучей под углом
-const RAY_AT_ANGLE_OFFSET = 0.01
+// const RAY_AT_ANGLE_OFFSET = 0.01
 // Компенсация, чтобы игрок мог выйти за пределы экрана по Y координате
 const OUT_OFF_Y_AXIOS_OFFSET = 100
 
@@ -24,7 +24,7 @@ export class RayCastCollider extends Collider {
 
   init(limitRect, collisionObjects, tileMap) {
     super.init(limitRect, collisionObjects, tileMap)
-    this._get45degrees = get45degreesBy(limitRect)
+    // this._get45degrees = get45degreesBy(limitRect)
   }
 
   /**
@@ -66,26 +66,26 @@ export class RayCastCollider extends Collider {
       new Ray(new Vector(mob.getRight() - RAY_OFFSET_X, mob.getBottom() - RAY_OFFSET_Y),
         new Vector(mob.getRight() - RAY_OFFSET_X, this.limitRect.height + OUT_OFF_Y_AXIOS_OFFSET),
         RayDirection.bottom),
-      // Угол 45 верхний-левый
-      new Ray(new Vector(mob.x + RAY_AT_ANGLE_OFFSET,  mob.y + RAY_AT_ANGLE_OFFSET),
-        this._get45degrees(mob.x + RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET,
-          RayDirection.topLeft),
-        RayDirection.topLeft),
-      // Угол 45 верхний-правый
-      new Ray(new Vector(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET),
-        this._get45degrees(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET,
-          RayDirection.topRight),
-        RayDirection.topRight),
-      // Угол 45 нижний-левый
-      new Ray(new Vector(mob.x + RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET),
-        this._get45degrees(mob.x + RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET,
-          RayDirection.bottomLeft),
-        RayDirection.bottomLeft),
-      // Угол 45 нижний-правый
-      new Ray(new Vector(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET),
-        this._get45degrees(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET,
-          RayDirection.bottomRight),
-        RayDirection.bottomRight)
+      // // Угол 45 верхний-левый
+      // new Ray(new Vector(mob.x + RAY_AT_ANGLE_OFFSET,  mob.y + RAY_AT_ANGLE_OFFSET),
+      //   this._get45degrees(mob.x + RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET,
+      //     RayDirection.topLeft),
+      //   RayDirection.topLeft),
+      // // Угол 45 верхний-правый
+      // new Ray(new Vector(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET),
+      //   this._get45degrees(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.y + RAY_AT_ANGLE_OFFSET,
+      //     RayDirection.topRight),
+      //   RayDirection.topRight),
+      // // Угол 45 нижний-левый
+      // new Ray(new Vector(mob.x + RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET),
+      //   this._get45degrees(mob.x + RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET,
+      //     RayDirection.bottomLeft),
+      //   RayDirection.bottomLeft),
+      // // Угол 45 нижний-правый
+      // new Ray(new Vector(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET),
+      //   this._get45degrees(mob.getRight() - RAY_AT_ANGLE_OFFSET, mob.getBottom() - RAY_AT_ANGLE_OFFSET,
+      //     RayDirection.bottomRight),
+      //   RayDirection.bottomRight)
     ]
   }
 

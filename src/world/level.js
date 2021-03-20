@@ -31,23 +31,24 @@ export class Level {
     const levelBoxes = getLayerByName('level')
 
     // Точки респауна
-    this.respawns = getLayerByName('respawn')
+    this.respawns = getLayerByName('respawn')?.objects ?? []
     // Исходные позиции противников
     this.enemies = getLayerByName('enemies')?.objects ?? []
     // Объекты коллизий
     this.collisionObjects = (getLayerByName('collisions')?.objects ?? []).map(object => {
       switch (object.type) {
-        case 'rect':
-          return new Rect(object.x, object.y, object.width, object.height)
         case 'triangle':
         case 'polygon':
           return new Polygon(object.x, object.y, object.polygon)
+        default:
+          return new Rect(object.x, object.y, object.width, object.height)
       }
     })
 
     const getObjectByName = findByName(levelBoxes.objects)
     // Позиция игрока на старте
     this.playerPosition = getObjectByName('player')
+    this.respawns.push(this.playerPosition)
     // Точка входа на следующий уровень
     this.nextLevelGate = getObjectByName('next-level-gate')
     // Точка входа на предыдущий уровень

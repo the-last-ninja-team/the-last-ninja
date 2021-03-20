@@ -76,14 +76,14 @@
          "name":"collisions",
          "objects":[
                 {
-                 "height":16,
+                 "height":17,
                  "id":17,
                  "name":"",
                  "rotation":0,
                  "type":"1",
                  "visible":true,
-                 "width":80,
-                 "x":64,
+                 "width":92.25,
+                 "x":59.5,
                  "y":192
                 }, 
                 {
@@ -104,20 +104,20 @@
                  "rotation":0,
                  "type":"1",
                  "visible":true,
-                 "width":1296,
-                 "x":256,
+                 "width":1303,
+                 "x":249,
                  "y":240
                 }, 
                 {
-                 "height":16,
+                 "height":18.5,
                  "id":20,
                  "name":"",
                  "rotation":0,
                  "type":"1",
                  "visible":true,
-                 "width":32,
-                 "x":1632,
-                 "y":288
+                 "width":46,
+                 "x":1625.75,
+                 "y":285.5
                 }, 
                 {
                  "height":16,
@@ -126,31 +126,31 @@
                  "rotation":0,
                  "type":"1",
                  "visible":true,
-                 "width":112,
-                 "x":2176,
+                 "width":128,
+                 "x":2168,
                  "y":96
                 }, 
                 {
-                 "height":16,
+                 "height":19.6666666666667,
                  "id":28,
                  "name":"",
                  "rotation":0,
                  "type":"1",
                  "visible":true,
-                 "width":32,
-                 "x":2336,
-                 "y":160
+                 "width":45.666666666667,
+                 "x":2329.66666666667,
+                 "y":156.333333333333
                 }, 
                 {
-                 "height":16,
+                 "height":19.3333333333333,
                  "id":32,
                  "name":"",
                  "rotation":0,
                  "type":"1",
                  "visible":true,
-                 "width":32,
-                 "x":2528,
-                 "y":176
+                 "width":45.666666666667,
+                 "x":2522.33333333333,
+                 "y":172.666666666667
                 }, 
                 {
                  "height":16,
@@ -170,8 +170,8 @@
                  "rotation":0,
                  "type":"1",
                  "visible":true,
-                 "width":512,
-                 "x":2688,
+                 "width":519.666666666667,
+                 "x":2680.33333333333,
                  "y":272
                 }, 
                 {
@@ -181,8 +181,8 @@
                  "rotation":0,
                  "type":"1",
                  "visible":true,
-                 "width":528,
-                 "x":1712,
+                 "width":543.333333333333,
+                 "x":1703,
                  "y":352
                 }, 
                 {
@@ -219,26 +219,26 @@
          "name":"respawn",
          "objects":[
                 {
-                 "height":16,
-                 "id":102,
+                 "height":32,
+                 "id":128,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":16,
                  "x":1536,
-                 "y":224
+                 "y":208
                 }, 
                 {
-                 "height":16,
-                 "id":103,
+                 "height":32,
+                 "id":129,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":16,
                  "x":2224,
-                 "y":336
+                 "y":320
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -305,21 +305,10 @@
                  "width":16,
                  "x":64,
                  "y":160
-                }, 
-                {
-                 "height":0,
-                 "id":127,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":65.684360021303,
-                 "y":36.5702112551039
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -329,48 +318,48 @@
          "name":"enemies",
          "objects":[
                 {
-                 "height":16,
-                 "id":112,
+                 "height":48,
+                 "id":130,
                  "name":"",
                  "rotation":0,
                  "type":"skeleton",
                  "visible":true,
-                 "width":16,
+                 "width":32,
                  "x":448,
-                 "y":224
+                 "y":192
                 }, 
                 {
-                 "height":16,
-                 "id":113,
+                 "height":32,
+                 "id":131,
                  "name":"",
                  "rotation":0,
                  "type":"goblin",
                  "visible":true,
                  "width":16,
                  "x":880,
-                 "y":224
+                 "y":208
                 }, 
                 {
-                 "height":16,
-                 "id":114,
-                 "name":"",
-                 "rotation":0,
-                 "type":"flyingEye",
-                 "visible":true,
-                 "width":16,
-                 "x":2544,
-                 "y":144
-                }, 
-                {
-                 "height":16,
-                 "id":115,
+                 "height":32,
+                 "id":133,
                  "name":"",
                  "rotation":0,
                  "type":"mushroom",
                  "visible":true,
                  "width":16,
-                 "x":1872,
-                 "y":336
+                 "x":1888,
+                 "y":320
+                }, 
+                {
+                 "height":32,
+                 "id":134,
+                 "name":"",
+                 "rotation":0,
+                 "type":"flyingEye",
+                 "visible":true,
+                 "width":32,
+                 "x":2528,
+                 "y":128
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -583,12 +572,12 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":128,
+ "nextobjectid":136,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.4.3",

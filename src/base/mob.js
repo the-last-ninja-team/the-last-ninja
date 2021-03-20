@@ -4,8 +4,8 @@ export class Mob extends MovingObject {
   constructor({ x, y, width, height, velocityMax, jumpPower = 20, speed = 0.55, hitBox }) {
     super(x, y, width, height, velocityMax)
 
-    this.hitBox = hitBox
-    this.originHitBox = hitBox
+    this.hitBox = hitBox?.base ?? { width, height }
+    this.originHitBox = { ...hitBox }
 
     this.originX = x
     this.originY = y
@@ -19,14 +19,21 @@ export class Mob extends MovingObject {
   }
 
   setHitBox(hitBox) {
+    const { width, height} = hitBox
+    if (this.hitBox.width === width && this.hitBox.height === height) {
+      return
+    }
     this.hitBox = hitBox
-    return this
+    this.y = this.getBottom() - height
+    this.height = height
+
+    this.oldY = this.y
   }
 
   jump() {
     if (!this.jumping && this.velocityY < 10) {
       this.crouching = false
-      this.hitBox = this.originHitBox
+      this.setHitBox(this.originHitBox.base)
       this.jumping = true
       this.velocityY -= this.jumpPower
     }
@@ -34,14 +41,14 @@ export class Mob extends MovingObject {
 
   moveLeft() {
     this.crouching = false
-    this.hitBox = this.originHitBox
+    this.setHitBox(this.originHitBox.base)
     this.directionX = -1
     this.velocityX -= this.speed
   }
 
   moveRight() {
     this.crouching = false
-    this.hitBox = this.originHitBox
+    this.setHitBox(this.originHitBox.base)
     this.directionX = 1
     this.velocityX += this.speed
   }
@@ -50,9 +57,9 @@ export class Mob extends MovingObject {
     if (!this.jumping && this.velocityY === 0) {
       this.crouching = crouching
       if (!this.crouching) {
-        this.hitBox = this.originHitBox
+        this.setHitBox(this.originHitBox.base)
       } else {
-        this.hitBox = { ...this.originHitBox, height: this.originHitBox.height / 2 }
+        this.setHitBox(this.originHitBox.crouch)
       }
     }
   }

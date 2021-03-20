@@ -60,9 +60,10 @@ export class World {
     const { x, y } = this.level.playerPosition
     this.player = ObjectsFactory.createPlayer(x, y, PlayerType.props)
 
-    const { limitRect, collisionObjects, tileMap } = this.level
+    const { limitRect, collisionObjects, tileMap, respawns } = this.level
 
-    this.env.init(limitRect, collisionObjects, tileMap)
+    this.env.init({
+      limitRect, collisionObjects, tileMap, respawns })
     this.env.addMob(this.player)
     this.playerAnimation.watch(this.player)
     this.level.watch(this.player)
@@ -102,15 +103,17 @@ export class World {
     this.playerAnimation.update()
     this.enemies.update()
 
-    this.hitBoxes = this.env.mobs.map(mob => this.hitBoxesHelper.getHitBoxes(mob)).flat()
+    const coinsHitBoxes = this.hitBoxesHelper.getCoinsHitBoxes(this.player, this.level.tileMap.size)
+    this.hitBoxes = this.env.mobs.map(mob => this.hitBoxesHelper.getHitBox(mob))
       .concat(this.checkFireballs.objects.map(object => {
-          return this.hitBoxesHelper.getHitBoxes(object, true)
-        }).flat())
+          return this.hitBoxesHelper.getHitBox(object, true)
+        }))
       .concat(this.checkArrows.objects.map(object => {
-          return this.hitBoxesHelper.getHitBoxes(object, true)
-        }).flat())
+          return this.hitBoxesHelper.getHitBox(object, true)
+        }))
+      .concat(coinsHitBoxes)
 
-    this.checkCoins?.update(this.hitBoxesHelper.getHitBoxes(this.player))
+    this.checkCoins?.update(coinsHitBoxes)
 
     if (this.level.nextLevelGate && this.level.isCanMoveToTheNextLevel()) {
       if (CollisionDetected.isRectRect(this.player, this.level.nextLevelGate)) {
