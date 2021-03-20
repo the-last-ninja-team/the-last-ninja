@@ -11,13 +11,6 @@
 - и т.д.
 
 ## What's new
-- Добавился [2ой уровень](https://bakudas.itch.io/generic-dungeon-pack) `./assets/level02` и для того чтобы на него перейти, <br/>
-нужно собрать все монетки и встать в позицию под зеленой стрелкой (в конце карты)<br/>
-![Green Arrow](./img/img_003.png)
-- Можно загружать уровни через `query` запрос, например http://localhost:8080/?level=02 - загрузит 2ой уровень
-- Добавил [тайлы](https://luizmelo.itch.io/monsters-creatures-fantasy) для 4х противников<br/>
-![Enemies](./img/img_002.png)
-- Добавил базовый набор движений + возможность задавать противников на карте уровня
 - Добавил [babel-plugin-root-import](https://snyk.io/advisor/npm-package/babel-plugin-root-import), чтобы задавать `alias` для путей (см. `.babelrc`)
 ```
 ./src - #/
@@ -34,6 +27,13 @@ import { Ray, RayDirection } from '../../base/ray'
 import { Ray, RayDirection } from '#base/ray'
 ```
 - Добавил реализацию `RayCast` коллизий (описание будет ниже)
+- Добавился [2ой уровень](https://bakudas.itch.io/generic-dungeon-pack) `./assets/level02` и для того чтобы на него перейти, <br/>
+нужно собрать все монетки и встать в позицию под зеленой стрелкой (в конце карты)<br/>
+![Green Arrow](./img/img_003.png)
+- Можно загружать уровни через `query` запрос, например http://localhost:8080/?level=02 - загрузит 2ой уровень
+- Добавил [тайлы](https://luizmelo.itch.io/monsters-creatures-fantasy) для 4х противников<br/>
+![Enemies](./img/img_002.png)
+- Добавил базовый набор движений + возможность задавать противников на карте уровня
 
 ### Enemies
 - Skeleton
