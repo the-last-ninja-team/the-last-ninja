@@ -9,11 +9,4 @@ export class HMovingObject extends MovingObject {
     this.speed = speed
     this.directionX = directionX
   }
-
-  update() {
-    this.oldX = this.x
-    this.oldY = this.y
-
-    this.x += (this.speed * this.directionX)
-  }
 }

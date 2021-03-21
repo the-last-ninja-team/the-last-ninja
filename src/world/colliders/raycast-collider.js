@@ -124,16 +124,14 @@ export class RayCastCollider extends Collider {
     let closestHitBoxPoint = null
 
     hitBoxes.forEach(hitBox => {
-      hitBox.collision.points
-        .filter(({ isColliding }) => isColliding)
-        .forEach(({ point }) => {
-          const distance = point.distanceFrom(ray.start)
-          if (distance < closestDistance || closestDistance === 0) {
-            closestDistance = distance
-            closestHitBox = hitBox
-            closestHitBoxPoint = point
-          }
-        })
+      hitBox.collision.points.forEach(point => {
+        const distance = point.distanceFrom(ray.start)
+        if (distance < closestDistance || closestDistance === 0) {
+          closestDistance = distance
+          closestHitBox = hitBox
+          closestHitBoxPoint = point
+        }
+      })
     })
 
     return {

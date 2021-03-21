@@ -6,6 +6,13 @@ export class CollisionDetected {
     //
   }
 
+  static _getResult(result) {
+    return {
+      isColliding: result.some(({ isColliding }) => isColliding),
+      points: result.filter(({ isColliding }) => isColliding).map(({ point }) => point)
+    }
+  }
+
   /**
    * Функция для чтения коллизии между 2мя прямоугольниками
    * @return boolean true - если коллизия есть
@@ -42,32 +49,23 @@ export class CollisionDetected {
     const topLine = new Line(new Vector(x, y), new Vector(x + width, y))
     const bottomLine = new Line(new Vector(x, y + height), new Vector(x + width, y + height))
 
-    const left = this.isLineLine(line, leftLine)
-    const right = this.isLineLine(line, rightLine)
-    const top = this.isLineLine(line, topLine)
-    const bottom = this.isLineLine(line, bottomLine)
+    const result = [
+      this.isLineLine(line, leftLine),
+      this.isLineLine(line, rightLine),
+      this.isLineLine(line, topLine),
+      this.isLineLine(line, bottomLine)
+    ]
 
-    return {
-      isColliding: left.isColliding || right.isColliding || top.isColliding || bottom.isColliding,
-      points: [left, right, top, bottom]
-    }
+    return this._getResult(result)
   }
 
   static isLinePolygon(line, polygon) {
     const { lines } = polygon
-    for (let i = 0; i < lines.length; i ++) {
-      const result = this.isLineLine(line, lines[i])
-      if (result.isColliding) {
-        return {
-          isColliding: true,
-          points: [result]
-        }
-      }
-    }
 
-    return {
-      isColliding: false,
-      points: []
-    }
+    const result = lines.map(polygonLine => {
+      return this.isLineLine(line, polygonLine)
+    })
+
+    return this._getResult(result)
   }
 }

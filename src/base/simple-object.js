@@ -3,9 +3,6 @@ import { Rect } from './rect'
 export class SimpleObject extends Rect {
   constructor(x, y, width, height) {
     super(x, y, width, height)
-
-    this.oldX = x
-    this.oldY = y
   }
 
   getBottom() {
@@ -24,22 +21,6 @@ export class SimpleObject extends Rect {
     return this.y
   }
 
-  getOldBottom() {
-    return this.oldY + this.height
-  }
-
-  getOldLeft() {
-    return this.oldX
-  }
-
-  getOldRight() {
-    return this.oldX + this.width
-  }
-
-  getOldTop() {
-    return this.oldY
-  }
-
   setBottom(y) {
     this.y = y - this.height
   }
@@ -54,21 +35,5 @@ export class SimpleObject extends Rect {
 
   setTop(y) {
     this.y = y
-  }
-
-  setOldBottom(y) {
-    this.oldY = y - this.height
-  }
-
-  setOldLeft(x) {
-    this.oldX = x
-  }
-
-  setOldRight(x) {
-    this.oldX = x - this.width
-  }
-
-  setOldTop(y) {
-    this.oldY = y
   }
 }

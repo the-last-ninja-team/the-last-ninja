@@ -63,12 +63,10 @@ export class Tools {
 
   update() {
     if (this.player) {
-      const { x, oldX, y, oldY, width, height, velocityX, velocityY } = this.player
+      const { x, y, width, height, velocityX, velocityY } = this.player
       this.debugInfoEl.value = JSON.stringify({
         x: Math.round(x),
-        oldX: Math.round(oldX),
         y: Math.round(y),
-        oldY: Math.round(oldY),
         width,
         height,
         velocityX: Math.round(velocityX),
@@ -89,6 +87,7 @@ export class Tools {
           if (hitBox instanceof Rect) {
             this.main.display.drawStroke({ ...hitBox, color: HITBOX_COLOR })
           } else if (hitBox instanceof Polygon) {
+            this.main.display.drawStroke(hitBox.rect)
             this.main.display.drawPolygon({ ...hitBox, color: HITBOX_COLOR })
           }
         })

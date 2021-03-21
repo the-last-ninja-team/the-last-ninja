@@ -37,9 +37,6 @@ export class Collider {
   }
 
   updatePosition(mob, gravity, friction) {
-    mob.oldX = mob.x
-    mob.oldY = mob.y
-
     mob.velocityY += gravity
     mob.velocityX *= mob.crouching ? friction + 0.08 : friction
 

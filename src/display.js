@@ -93,11 +93,19 @@ export class Display {
    * Функция для проверки, нужно ли по заданным координатам рисовать объект.
    * Если он полностью выходит за рамки экрана, то рисовать нет смысла
    * */
-  isNeedToDraw(x, y, width, height) {
-    return !((x >= this.context.canvas.width) ||
-      (y >= this.context.canvas.height) ||
-      ((x + width) <= 0) ||
-      ((y + height) <= 0))
+  isNeedToDraw({ x, y, width, height }, sticky) {
+    let destinationX = x
+    let destinationY = y
+
+    if (!sticky && this.camera) {
+      destinationX -= this.camera.x
+      destinationY -= this.camera.y
+    }
+
+    return !((destinationX >= this.buffer.canvas.width) ||
+      (destinationY >= this.buffer.canvas.height) ||
+      ((destinationX + width) <= 0) ||
+      ((destinationY + height) <= 0))
   }
 
   /** Масштабируем канву */
@@ -121,27 +129,9 @@ export class Display {
     })
   }
 
-  /**
-   * Отрисовка параллакса, где учитывается Y позиция камеры для создания эффекта "когда игрок поднимается вверх,
-   * то ближний фон уходит вниз (попадает из виду)"
-   * @param parallaxImage параллакс
-   * @param sticky флаг, что объект должен "прилипнуть" к заданной точке,
-   * иначе он будет рисоваться относительно Y позиции камеры*/
-  drawParallaxImage(parallaxImage, sticky = true) {
-    parallaxImage.images.forEach(img => {
-      let destinationY = Math.round(img.y)
-
-      if (!sticky && this.camera) {
-        destinationY -= this.camera.y
-      }
-
-      this.drawImg({ ...img, y: destinationY })
-    })
-  }
-
   /** Отрисовка обычной картинки с проверкой */
   drawImg(img) {
-    if (!this.isNeedToDraw(img)) {
+    if (!this.isNeedToDraw(img, true)) {
       return
     }
 
@@ -239,7 +229,7 @@ export class Display {
     }
   }
 
-  drawPolygon({ x, y, points, color = 'black', sticky = false }) {
+  drawPolygon({ x, y, rect, points, color = 'black', sticky = false }) {
     this.buffer.beginPath()
 
     let destinationX = Math.round(x)
@@ -248,6 +238,10 @@ export class Display {
     if (!sticky && this.camera) {
       destinationX -= this.camera.x
       destinationY -= this.camera.y
+    }
+
+    if (!this.isNeedToDraw(rect, sticky)) {
+      return
     }
 
     this.buffer.moveTo(destinationX, destinationY)
@@ -269,7 +263,7 @@ export class Display {
     this.buffer.stroke()
   }
 
-  drawLine({ start, end, color = 'black', sticky = false }) {
+  drawLine({ start, end, color = 'black', lineWidth = 1, sticky = false }) {
     let destinationP1x = Math.round(start.x)
     let destinationP1y = Math.round(start.y)
 
@@ -288,7 +282,7 @@ export class Display {
     this.buffer.moveTo(destinationP1x, destinationP1y)
     this.buffer.lineTo(destinationP2x, destinationP2y)
     this.buffer.strokeStyle = color
-    this.buffer.lineWidth = 1
+    this.buffer.lineWidth = lineWidth
     this.buffer.stroke()
   }
 
@@ -308,7 +302,7 @@ export class Display {
       y: destinationY,
       width: destinationWidth,
       height: destinationHeight
-    })) {
+    }, sticky)) {
       // Если объект не в зоне видимости, то выходим
       return
     }

@@ -1,26 +1,29 @@
-import {findClosesRespawnPoint} from "#world/environment/utils";
+import { findClosesRespawnPoint } from '#world/environment/utils'
+import { Mob } from '#base/mob'
 
 export class Environment {
   constructor(friction, gravity, collider) {
     this.friction = friction
     this.gravity = gravity
     this.collider = collider
+
+    this.objects = new Map()
   }
 
   init({ limitRect, collisionObjects, tileMap, respawns }) {
-    this.mobs = []
+    this.objects.clear()
     this.collides = []
     this.limitRect = limitRect
     this.respawns = respawns
     this.collider.init(limitRect, collisionObjects, tileMap)
   }
 
-  addMob(...mob) {
-    this.mobs = this.mobs.concat(mob)
+  addObject(object, props) {
+    this.objects.set(object, props)
   }
 
-  removeMob(mob) {
-    this.mobs = this.mobs.filter(toRemove => !toRemove === mob)
+  removeObject(object) {
+    this.objects.delete(object)
   }
 
   _collideMob(mob) {
@@ -40,10 +43,15 @@ export class Environment {
   update() {
     this.collides = []
 
-    this.mobs.forEach(mob => {
-      this.collides = this.collides.concat(
-        this.collider.check(mob, this.gravity, this.friction))
-      this._collideMob(mob)
+    this.objects.forEach((props, key) => {
+      if (key instanceof Mob) {
+        this.collides = this.collides.concat(this.collider.check(key, this.gravity, this.friction))
+        this._collideMob(key)
+      } else if (props) {
+        const { get, apply } = props
+        const position = get(key)
+        apply(key, position)
+      }
     })
   }
 }

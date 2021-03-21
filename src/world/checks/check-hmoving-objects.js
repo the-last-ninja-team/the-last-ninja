@@ -1,20 +1,35 @@
 import { Animator, AnimatorMode } from '#graphic/animator'
 
 const proxyHandler = {
-  set(target, prop, val) {
-    switch (prop) {
+  set(target, propKey, value) {
+    switch (propKey) {
       case 'x':
-        target.ref.animation.x = val
+        target.ref.animation.x = value
         break
       case 'y':
-        target.ref.animation.y = val
+        target.ref.animation.y = value
         break
     }
 
-    target[prop] = val
+    target[propKey] = value
 
     return true
-  }
+  },
+  // get(target, propKey) {
+  //   if (typeof target[propKey] === 'function') {
+  //     return new Proxy(target[propKey], {
+  //       apply(applyTarget, thisArg, args) {
+  //         const result = Reflect.apply(applyTarget, thisArg, args)
+  //         if (propKey === 'update') {
+  //           target.ref.animate()
+  //         }
+  //         return result
+  //       }
+  //     })
+  //   }
+  //
+  //   return target[propKey]
+  // }
 }
 
 export class CheckHMovingObjects {
@@ -24,6 +39,9 @@ export class CheckHMovingObjects {
     this.createObjectCallback = createObjectCallback
 
     this.objects = []
+    this.fire = this.fire.bind(this)
+    this.getPosition = this.getPosition.bind(this)
+    this.applyPosition = this.applyPosition.bind(this)
   }
 
   fire() {
@@ -32,21 +50,25 @@ export class CheckHMovingObjects {
 
     const animator = new Animator(frames, delay, AnimatorMode.loop)
     animator.animation.setXY(object.x, object.y)
-    const objectWithRef = { ...object, ref: animator }
-    const proxy = new Proxy(objectWithRef, proxyHandler)
+    object.ref = animator
 
+    const proxy = new Proxy(object, proxyHandler)
     this.objects.push(proxy)
+
+    return proxy
   }
 
-  update() {
-    this.objects.forEach(object => {
-      object.oldX = object.x
-      object.oldY = object.y
-      object.x = object.x + (object.speed * object.directionX)
-      object.ref.animate()
-    })
-    this.objects = this.objects.filter(object => {
-      return (object.x + object.width) >= 0 && object.x <= this.limitRect.width
-    })
+  getPosition(object) {
+    return {
+      y: object.y,
+      x: object.x + (object.speed * object.directionX)
+    }
+  }
+
+  applyPosition(object, position) {
+    object.y = position.y
+    object.x = position.x
+
+    object.ref.animate()
   }
 }

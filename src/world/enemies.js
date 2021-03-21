@@ -17,7 +17,7 @@ export class Enemies {
 
       mob.directionX = -1
       animation.watch(mob)
-      this.env.addMob(mob)
+      this.env.addObject(mob)
       return animation
     })
   }

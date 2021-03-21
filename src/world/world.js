@@ -56,6 +56,16 @@ export class World {
     this.initLevel()
   }
 
+  fireCheck(check) {
+    return () => {
+      const object = check.fire()
+      this.env.addObject(object, {
+        get: check.getPosition,
+        apply: check.applyPosition
+      })
+    }
+  }
+
   initLevel() {
     const { x, y } = this.level.playerPosition
     this.player = ObjectsFactory.createPlayer(x, y, PlayerType.props)
@@ -64,7 +74,7 @@ export class World {
 
     this.env.init({
       limitRect, collisionObjects, tileMap, respawns })
-    this.env.addMob(this.player)
+    this.env.addObject(this.player)
     this.playerAnimation.watch(this.player)
     this.level.watch(this.player)
     this.enemies.init(this.level.enemies)
@@ -81,8 +91,9 @@ export class World {
       createObjectCallback: ObjectsFactory.createMovingObject(ObjectType.arrow)
     })
 
-    this.player.castAction.callback = this.checkFireballs.fire.bind(this.checkFireballs)
-    this.player.bowAttackAction.callback = this.checkArrows.fire.bind(this.checkArrows)
+    this.player.castAction.callback = this.fireCheck(this.checkFireballs)
+    this.player.bowAttackAction.callback = this.fireCheck(this.checkArrows)
+
     if (this.level.coinsStaticAnimation) {
       this.checkCoins = new CheckCoins(this.player, this.level.coinsStaticAnimation)
     } else {
@@ -97,19 +108,19 @@ export class World {
 
   update() {
     this.env.update()
-    this.checkFireballs.update()
-    this.checkArrows.update()
     this.level.update()
     this.playerAnimation.update()
     this.enemies.update()
 
     const coinsHitBoxes = this.hitBoxesHelper.getCoinsHitBoxes(this.player, this.level.tileMap.size)
-    this.hitBoxes = this.env.mobs.map(mob => this.hitBoxesHelper.getHitBox(mob))
+    const objects = Array.from(this.env.objects.keys())
+
+    this.hitBoxes = objects.map(object => this.hitBoxesHelper.getHitBox(object))
       .concat(this.checkFireballs.objects.map(object => {
-          return this.hitBoxesHelper.getHitBox(object, true)
+          return this.hitBoxesHelper.getHitBox(object)
         }))
       .concat(this.checkArrows.objects.map(object => {
-          return this.hitBoxesHelper.getHitBox(object, true)
+          return this.hitBoxesHelper.getHitBox(object)
         }))
       .concat(coinsHitBoxes)
 
