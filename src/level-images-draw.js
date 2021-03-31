@@ -16,6 +16,10 @@ export class LevelImagesDraw {
     this.imagesStore = imagesStore
   }
 
+  getSpriteByLayerType(layerType) {
+    return this.imagesStore.sprites.find(item => item.layerType === layerType)?.sprite
+  }
+
   drawLayer(layerType) {
     this.imagesStore.images
       .filter(item => item.layerType === layerType)

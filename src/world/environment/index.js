@@ -1,11 +1,14 @@
 import { findClosesRespawnPoint } from '#world/environment/utils'
 import { Mob } from '#base/mob'
+import { CollisionDetected } from '#/collision-detected'
+import { Rect } from '#base/rect'
 
 export class Environment {
-  constructor(friction, gravity, collider) {
+  constructor({ friction, gravity, collider, screen }) {
     this.friction = friction
     this.gravity = gravity
     this.collider = collider
+    this.screen = screen
 
     this.objects = new Map()
   }
@@ -15,6 +18,7 @@ export class Environment {
     this.collides = []
     this.limitRect = limitRect
     this.respawns = respawns
+    this.collisionObjects = collisionObjects
     this.collider.init(limitRect, collisionObjects, tileMap)
   }
 
@@ -40,8 +44,21 @@ export class Environment {
     }
   }
 
+  _collideObject(object, newPosition) {
+    return this.collisionObjects.some(hitBox => {
+      const newObjectRect = new Rect(newPosition.x, newPosition.y, object.width, object.height)
+      if (CollisionDetected.isRectRect(hitBox, newObjectRect)) {
+        return true
+      }
+
+      return false
+    })
+  }
+
   update() {
     this.collides = []
+
+    const objectsToRemove = []
 
     this.objects.forEach((props, key) => {
       if (key instanceof Mob) {
@@ -49,9 +66,32 @@ export class Environment {
         this._collideMob(key)
       } else if (props) {
         const { get, apply } = props
-        const position = get(key)
-        apply(key, position)
+
+        // Получаем новую позицию объекта
+        const newPosition = get(key)
+
+        // Строим прямую между текущим и новым положением
+        const { x: currentX, y: currentY, width, height } = key
+        const { x: newX, y: newY } = newPosition
+
+        console.log('Result is', { currentX, currentY, width, height, newX, newY })
+
+        if (currentX > (this.screen.x + this.screen.width) || (currentX + width) < this.screen.x
+          || currentY + height > (this.screen.y + this.screen.height) || currentY < this.screen.y) {
+          // Если объект ушел за пределы игрового пространства, то его необходимо удалить из массива
+          objectsToRemove.push(key)
+        } else if (this._collideObject(key, newPosition)) {
+          // Если границы объекта пересеклись с препятствием, то мы запускаем анимацию "разрушения"
+          // (например, стрела ударившись со стеной сломается)
+          objectsToRemove.push(key)
+        } else {
+          // Применяем новое положение
+          apply(key, newPosition)
+        }
       }
     })
+
+    // Удаляем объект из массива
+    objectsToRemove.forEach(object => this.removeObject(object))
   }
 }

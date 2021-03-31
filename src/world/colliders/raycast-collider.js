@@ -140,18 +140,22 @@ export class RayCastCollider extends Collider {
     }
   }
 
+  _getHitBoxesWithCollision(mob, ray) {
+    return this.collisionObjects.map(object => {
+      return {
+        object,
+        collision: this._checkObjectCollisionWithRay(object, ray)
+      }
+    }).filter(({ collision }) => collision?.isColliding)
+  }
+
   _getNormalizedRays(mob) {
     const rays = this._getBaseRays(mob)
 
     rays.forEach(ray => {
-      const hitBoxesWithCollision = this.collisionObjects.map(object => {
-        return {
-          object,
-          collision: this._checkObjectCollisionWithRay(object, ray)
-        }
-      }).filter(({ collision }) => collision?.isColliding)
-
+      const hitBoxesWithCollision = this._getHitBoxesWithCollision(mob, ray)
       const closestHitBox = this._getClosestHitBox(hitBoxesWithCollision, ray)
+
       if (closestHitBox) {
         const { point, hitBox: { object } } = closestHitBox
 

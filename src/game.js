@@ -1,8 +1,8 @@
 import { World } from './world/world'
 
 export class Game {
-  constructor(createLevel) {
-    this.world = new World({ createLevel })
+  constructor(createLevel, screen) {
+    this.world = new World({ screen, createLevel })
   }
 
   update(time) {

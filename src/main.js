@@ -3,6 +3,8 @@ import { Display } from './display'
 import { Controller } from './controller'
 import { Game } from './game'
 import { MainCamera } from './main-camera'
+import { Screen } from './screen';
+import { MiniMap } from './mini-map';
 import { Tools } from './tools';
 
 import { LayerType, LevelImagesDraw } from './level-images-draw'
@@ -44,11 +46,13 @@ export class Main {
 
     this.controller = new Controller()
     this.camera = new MainCamera()
+    this.screen = new Screen(this.camera)
     this.display = new Display(canvas, this.camera)
-    this.game = new Game(this.createLevel.bind(this))
+    this.game = new Game(this.createLevel.bind(this), this.screen)
     this.engine = new Engine(timeStep, this.update, this.render)
     this.playerController = this.game.world.getPlayerController(this.controller)
     this.imagesDraw = new LevelImagesDraw(this.display)
+    this.miniMap = new MiniMap(this.screen)
 
     window.addEventListener('resize', this.resize)
     window.addEventListener('keydown', this.keyDownUp)
@@ -95,6 +99,10 @@ export class Main {
     this.camera.init({ cameraTrap, limitRect, screenRect })
     // Инициализируем объект для отрисовки слоев уровня
     this.imagesDraw.init(this.game.world.level.imagesStore)
+    // Инициализируем экран
+    this.screen.init(screenRect.width, screenRect.height)
+    // Инициализируем мини-карту
+    this.miniMap.init(limitRect)
   }
 
   keyDownUp(event) {
@@ -146,6 +154,14 @@ export class Main {
 
     // Если в режиме "Debug"
     this.tools.render()
+    // Рисуем мини-карту
+    const [map, screen] = this.miniMap.mapRects
+
+    const levelSprite = this.imagesDraw.getSpriteByLayerType(LayerType.level)
+    this.display.drawStroke({ ...map, color: 'green', sticky: true })
+    this.display.drawImg({ ...levelSprite, ...map  })
+    this.display.drawStroke({ ...screen, color: 'green', sticky: true })
+
     // Выводим на экран
     this.display.render()
   }
@@ -160,5 +176,9 @@ export class Main {
     this.camera.update()
     // Обновляем отладочные инструменты
     this.tools.update()
+    // Обновляем положение экрана
+    this.screen.update()
+    // Обновляем положение мини-карты
+    this.miniMap.update()
   }
 }

@@ -22,14 +22,17 @@ import { HitBoxesHelper } from './hitboxes-helper'
 import { CollisionDetected } from '#/collision-detected'
 
 export class World {
-  constructor({ friction = 0.85, gravity = 2, createLevel }) {
+  constructor({ screen, friction = 0.85, gravity = 2, createLevel }) {
     // Цвет фона
     this.backgroundColor = 'grey'
     this.createLevel = createLevel
     this.hitBoxes = []
+    this.screen = screen
 
     // Окружение, куда будем помещать все объекты (противники, игрок, стрелы и т.д.)
-    this.env = new Environment(friction, gravity, new RayCastCollider())
+    this.env = new Environment({
+      friction, gravity, collider: new RayCastCollider(), screen
+    })
     // Хелпер для чтения хитбоксов объектов
     this.hitBoxesHelper = new HitBoxesHelper()
     // Противники
@@ -112,18 +115,10 @@ export class World {
     this.playerAnimation.update()
     this.enemies.update()
 
-    const coinsHitBoxes = this.hitBoxesHelper.getCoinsHitBoxes(this.player, this.level.tileMap.size)
     const objects = Array.from(this.env.objects.keys())
-
     this.hitBoxes = objects.map(object => this.hitBoxesHelper.getHitBox(object))
-      .concat(this.checkFireballs.objects.map(object => {
-          return this.hitBoxesHelper.getHitBox(object)
-        }))
-      .concat(this.checkArrows.objects.map(object => {
-          return this.hitBoxesHelper.getHitBox(object)
-        }))
-      .concat(coinsHitBoxes)
 
+    const coinsHitBoxes = this.hitBoxesHelper.getCoinsHitBoxes(this.player, this.level.tileMap.size)
     this.checkCoins?.update(coinsHitBoxes)
 
     if (this.level.nextLevelGate && this.level.isCanMoveToTheNextLevel()) {
